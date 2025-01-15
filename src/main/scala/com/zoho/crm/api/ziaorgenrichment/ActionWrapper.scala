@@ -5,15 +5,15 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable.ArrayBuffer
 
 class ActionWrapper extends Model with ActionHandler	{
-	private var ziaorgenrichment:ArrayBuffer[ActionResponse] = _
+	private var ziaOrgEnrichment:ArrayBuffer[ActionResponse] = _
 	private var keyModified:HashMap[String, Int] = HashMap()
 
-	def getZiaorgenrichment() :ArrayBuffer[ActionResponse]	={
-		return  this.ziaorgenrichment
+	def getZiaOrgEnrichment() :ArrayBuffer[ActionResponse]	={
+		return  this.ziaOrgEnrichment
 	}
 
-	def setZiaorgenrichment( ziaorgenrichment: ArrayBuffer[ActionResponse]) 	={
-		 this.ziaorgenrichment = ziaorgenrichment
+	def setZiaOrgEnrichment( ziaOrgEnrichment: ArrayBuffer[ActionResponse]) 	={
+		 this.ziaOrgEnrichment = ziaOrgEnrichment
 		 this.keyModified("__zia_org_enrichment") = 1
 	}
 

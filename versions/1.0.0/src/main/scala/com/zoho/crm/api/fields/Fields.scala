@@ -1,5 +1,6 @@
 package com.zoho.crm.api.fields
 
+import com.zoho.crm.api.globalpicklists.Picklist
 import com.zoho.crm.api.modules.MinifiedModule
 import com.zoho.crm.api.modules.SharingProperties
 import com.zoho.crm.api.util.Model
@@ -79,10 +80,10 @@ class Fields extends Model	{
 	private var allowedModules:ArrayBuffer[MinifiedModule] = _
 	private var additionalColumn:Option[String] = None
 	private var fieldLabel:Option[String] = None
-	private var globalPicklist:Any = None
+	private var globalPicklist:Option[Picklist] = None
 	private var hipaaComplianceEnabled:Option[Boolean] = None
 	private var hipaaCompliance:Option[HipaaCompliance] = None
-	private var updateexistingrecords:Option[Boolean] = None
+	private var updateExistingRecords:Option[Boolean] = None
 	private var numberSeparator:Option[Boolean] = None
 	private var textarea:Option[Textarea] = None
 	private var staticField:Option[Boolean] = None
@@ -727,11 +728,11 @@ class Fields extends Model	{
 		 this.keyModified("field_label") = 1
 	}
 
-	def getGlobalPicklist() :Any	={
+	def getGlobalPicklist() :Option[Picklist]	={
 		return  this.globalPicklist
 	}
 
-	def setGlobalPicklist( globalPicklist: Any) 	={
+	def setGlobalPicklist( globalPicklist: Option[Picklist]) 	={
 		 this.globalPicklist = globalPicklist
 		 this.keyModified("global_picklist") = 1
 	}
@@ -754,12 +755,12 @@ class Fields extends Model	{
 		 this.keyModified("hipaa_compliance") = 1
 	}
 
-	def getUpdateexistingrecords() :Option[Boolean]	={
-		return  this.updateexistingrecords
+	def getUpdateExistingRecords() :Option[Boolean]	={
+		return  this.updateExistingRecords
 	}
 
-	def setUpdateexistingrecords( updateexistingrecords: Option[Boolean]) 	={
-		 this.updateexistingrecords = updateexistingrecords
+	def setUpdateExistingRecords( updateExistingRecords: Option[Boolean]) 	={
+		 this.updateExistingRecords = updateExistingRecords
 		 this.keyModified("_update_existing_records") = 1
 	}
 

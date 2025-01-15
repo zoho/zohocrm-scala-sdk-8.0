@@ -1,5 +1,6 @@
 package com.zoho.crm.api.fields
 
+import com.zoho.crm.api.globalpicklists.Picklist
 import com.zoho.crm.api.util.Choice
 import com.zoho.crm.api.util.Model
 import scala.collection.mutable.HashMap
@@ -22,6 +23,7 @@ class PickListValue extends Model	{
 	private var maps:ArrayBuffer[Maps] = _
 	private var delete:Option[Boolean] = None
 	private var showValue:Option[Boolean] = None
+	private var globalPicklistValue:Option[Picklist] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getColourCode() :Option[String]	={
@@ -166,6 +168,15 @@ class PickListValue extends Model	{
 	def setShowValue( showValue: Option[Boolean]) 	={
 		 this.showValue = showValue
 		 this.keyModified("show_value") = 1
+	}
+
+	def getGlobalPicklistValue() :Option[Picklist]	={
+		return  this.globalPicklistValue
+	}
+
+	def setGlobalPicklistValue( globalPicklistValue: Option[Picklist]) 	={
+		 this.globalPicklistValue = globalPicklistValue
+		 this.keyModified("_global_picklist_value") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

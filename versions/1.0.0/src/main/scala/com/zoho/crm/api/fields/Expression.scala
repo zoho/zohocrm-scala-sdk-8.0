@@ -6,7 +6,7 @@ import scala.collection.mutable.ArrayBuffer
 
 class Expression extends Model	{
 	private var functionParameters:ArrayBuffer[FunctionParameter] = _
-	private var criteria:Option[RollupCriteria] = None
+	private var criteria:Option[Criteria] = None
 	private var function:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
@@ -19,11 +19,11 @@ class Expression extends Model	{
 		 this.keyModified("function_parameters") = 1
 	}
 
-	def getCriteria() :Option[RollupCriteria]	={
+	def getCriteria() :Option[Criteria]	={
 		return  this.criteria
 	}
 
-	def setCriteria( criteria: Option[RollupCriteria]) 	={
+	def setCriteria( criteria: Option[Criteria]) 	={
 		 this.criteria = criteria
 		 this.keyModified("criteria") = 1
 	}

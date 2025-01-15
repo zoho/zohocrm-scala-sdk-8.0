@@ -11,6 +11,11 @@ class ActionsAllowed extends Model	{
 	private var delete:Option[Boolean] = None
 	private var deactivate:Option[Boolean] = None
 	private var setLayoutPermissions:Option[Boolean] = None
+	private var addField:Option[Boolean] = None
+	private var changeTabTraversal:Option[Boolean] = None
+	private var reorder:Option[Boolean] = None
+	private var removeField:Option[Boolean] = None
+	private var changeColumnCount:Option[Boolean] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getEdit() :Option[Boolean]	={
@@ -74,6 +79,51 @@ class ActionsAllowed extends Model	{
 	def setSetLayoutPermissions( setLayoutPermissions: Option[Boolean]) 	={
 		 this.setLayoutPermissions = setLayoutPermissions
 		 this.keyModified("set_layout_permissions") = 1
+	}
+
+	def getAddField() :Option[Boolean]	={
+		return  this.addField
+	}
+
+	def setAddField( addField: Option[Boolean]) 	={
+		 this.addField = addField
+		 this.keyModified("add_field") = 1
+	}
+
+	def getChangeTabTraversal() :Option[Boolean]	={
+		return  this.changeTabTraversal
+	}
+
+	def setChangeTabTraversal( changeTabTraversal: Option[Boolean]) 	={
+		 this.changeTabTraversal = changeTabTraversal
+		 this.keyModified("change_tab_traversal") = 1
+	}
+
+	def getReorder() :Option[Boolean]	={
+		return  this.reorder
+	}
+
+	def setReorder( reorder: Option[Boolean]) 	={
+		 this.reorder = reorder
+		 this.keyModified("reorder") = 1
+	}
+
+	def getRemoveField() :Option[Boolean]	={
+		return  this.removeField
+	}
+
+	def setRemoveField( removeField: Option[Boolean]) 	={
+		 this.removeField = removeField
+		 this.keyModified("remove_field") = 1
+	}
+
+	def getChangeColumnCount() :Option[Boolean]	={
+		return  this.changeColumnCount
+	}
+
+	def setChangeColumnCount( changeColumnCount: Option[Boolean]) 	={
+		 this.changeColumnCount = changeColumnCount
+		 this.keyModified("change_column_count") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

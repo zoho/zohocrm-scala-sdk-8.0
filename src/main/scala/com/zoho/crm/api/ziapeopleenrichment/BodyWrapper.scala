@@ -5,15 +5,15 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable.ArrayBuffer
 
 class BodyWrapper extends Model	{
-	private var ziapeopleenrichment:ArrayBuffer[ZiaPeopleEnrichment] = _
+	private var ziaPeopleEnrichment:ArrayBuffer[ZiaPeopleEnrichment] = _
 	private var keyModified:HashMap[String, Int] = HashMap()
 
-	def getZiapeopleenrichment() :ArrayBuffer[ZiaPeopleEnrichment]	={
-		return  this.ziapeopleenrichment
+	def getZiaPeopleEnrichment() :ArrayBuffer[ZiaPeopleEnrichment]	={
+		return  this.ziaPeopleEnrichment
 	}
 
-	def setZiapeopleenrichment( ziapeopleenrichment: ArrayBuffer[ZiaPeopleEnrichment]) 	={
-		 this.ziapeopleenrichment = ziapeopleenrichment
+	def setZiaPeopleEnrichment( ziaPeopleEnrichment: ArrayBuffer[ZiaPeopleEnrichment]) 	={
+		 this.ziaPeopleEnrichment = ziaPeopleEnrichment
 		 this.keyModified("__zia_people_enrichment") = 1
 	}
 

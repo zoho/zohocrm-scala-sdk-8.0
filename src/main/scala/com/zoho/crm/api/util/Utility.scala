@@ -710,22 +710,30 @@ object  Utility {
     if(apiType.toLowerCase().equalsIgnoreCase(Constants.MULTI_SELECT_LOOKUP)) {
 			fieldDetail.put(Constants.SKIP_MANDATORY, true)
 			if(field.getMultiselectlookup() != null && field.getMultiselectlookup().isDefined) {
-				if(field.getMultiselectlookup().get.getLinkingModule() != null) {
-					val linkingModule = field.getMultiselectlookup().get.getLinkingModule()
-					fieldDetail.put(Constants.MODULE.toLowerCase, linkingModule.get.getAPIName())
-					module = linkingModule.get
-				}
+        val linkingDetails = field.getMultiselectlookup().get.getLinkingDetails()
+        if (linkingDetails != null && linkingDetails.isDefined){
+          val linkingModule = linkingDetails.get.getModule()
+          if (linkingModule != null && linkingModule.isDefined){
+            fieldDetail.put(Constants.MODULE.toLowerCase, linkingModule.get.getAPIName())
+            module.setAPIName(linkingModule.get.getAPIName())
+            module.setId(linkingModule.get.getId())
+          }
+        }
 			}
 			fieldDetail.put(Constants.SUBFORM, true)
 		}
 		if(apiType.toLowerCase().equalsIgnoreCase(Constants.MULTI_USER_LOOKUP)) {
 			fieldDetail.put(Constants.SKIP_MANDATORY, true)
 			if(field.getMultiuserlookup() != null && field.getMultiuserlookup().isDefined) {
-				if(field.getMultiuserlookup().get.getLinkingModule() != null) {
-					val linkingModule = field.getMultiuserlookup().get.getLinkingModule()
-					fieldDetail.put(Constants.MODULE.toLowerCase, linkingModule)
-					module = linkingModule.get
-				}
+        val linkingDetails = field.getMultiuserlookup().get.getLinkingDetails()
+        if (linkingDetails != null && linkingDetails.isDefined){
+          val linkingModule = linkingDetails.get.getModule()
+          if (linkingModule != null && linkingModule.isDefined){
+            fieldDetail.put(Constants.MODULE.toLowerCase, linkingModule.get.getAPIName())
+            module.setAPIName(linkingModule.get.getAPIName())
+            module.setId(linkingModule.get.getId())
+          }
+        }
 			}
 			fieldDetail.put(Constants.SUBFORM, true)
 		}

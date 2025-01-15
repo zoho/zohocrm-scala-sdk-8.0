@@ -4,15 +4,15 @@ import com.zoho.crm.api.util.Model
 import scala.collection.mutable.HashMap
 
 class ResponseWrapper extends Model with ResponseHandler	{
-	private var conversionoptions:Option[ConversionOptions] = None
+	private var conversionOptions:Option[ConversionOptions] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
-	def getConversionoptions() :Option[ConversionOptions]	={
-		return  this.conversionoptions
+	def getConversionOptions() :Option[ConversionOptions]	={
+		return  this.conversionOptions
 	}
 
-	def setConversionoptions( conversionoptions: Option[ConversionOptions]) 	={
-		 this.conversionoptions = conversionoptions
+	def setConversionOptions( conversionOptions: Option[ConversionOptions]) 	={
+		 this.conversionOptions = conversionOptions
 		 this.keyModified("__conversion_options") = 1
 	}
 

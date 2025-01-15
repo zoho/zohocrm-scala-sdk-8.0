@@ -101,7 +101,14 @@ class JSONConverter(commonAPIHandler: CommonAPIHandler) extends Converter(common
                 primaryKeys.remove(keyName)
                 requiredInUpdateKeys.remove(keyName)
               }
-              requestJSON.put(keyName, setData(memberDetail, fieldValue))
+              if(keyName.equalsIgnoreCase(Constants.BODY) && this.commonAPIHandler.getAPIPath.endsWith(Constants.FUNCTIONS_PATH) && this.commonAPIHandler.getAPIPath.contains(Constants.FUNCTIONS))
+              {
+                return this.setData(memberDetail, fieldValue).asInstanceOf[JSONObject];
+              }
+              else
+              {
+                requestJSON.put(keyName, setData(memberDetail, fieldValue));
+              }
             }
           }
         }

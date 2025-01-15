@@ -7,7 +7,7 @@ class Layouts extends Model	{
 	private var displayLabel:Option[String] = None
 	private var name:Option[String] = None
 	private var id:Option[Long] = None
-	private var defaultview:Option[Views] = None
+	private var defaultView:Option[Views] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getDisplayLabel() :Option[String]	={
@@ -37,12 +37,12 @@ class Layouts extends Model	{
 		 this.keyModified("id") = 1
 	}
 
-	def getDefaultview() :Option[Views]	={
-		return  this.defaultview
+	def getDefaultView() :Option[Views]	={
+		return  this.defaultView
 	}
 
-	def setDefaultview( defaultview: Option[Views]) 	={
-		 this.defaultview = defaultview
+	def setDefaultView( defaultView: Option[Views]) 	={
+		 this.defaultView = defaultView
 		 this.keyModified("_default_view") = 1
 	}
 

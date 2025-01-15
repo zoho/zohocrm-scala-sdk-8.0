@@ -337,7 +337,8 @@ object Constants {
   val IN_DATACENTER: ArrayBuffer[String] = ArrayBuffer("https://www.zohoapis.in", "https://sandbox.zohoapis.in", "https://developer.zohoapis.in", "https://accounts.zoho.in/oauth/v2/token", "in")
   val JP_DATACENTER: ArrayBuffer[String] = ArrayBuffer("https://www.zohoapis.jp", "https://sandbox.zohoapis.jp", "https://developer.zohoapis.jp", "https://accounts.zoho.jp/oauth/v2/token", "jp")
   val US_DATACENTER: ArrayBuffer[String] = ArrayBuffer("https://www.zohoapis.com", "https://sandbox.zohoapis.com", "https://developer.zohoapis.com", "https://accounts.zoho.com/oauth/v2/token", "us")
-  val CA_DATACENTER: ArrayBuffer[String] = ArrayBuffer("https://www.zohoapis.ca", "https://sandbox.zohoapis.ca", "https://developer.zohoapis.ca", "https://accounts.zoho.ca/oauth/v2/token", "ca")
+  val CA_DATACENTER: ArrayBuffer[String] = ArrayBuffer("https://www.zohoapis.ca", "https://sandbox.zohoapis.ca", "https://developer.zohoapis.ca", "https://accounts.zohocloud.ca/oauth/v2/token", "ca")
+  val SA_DATACENTER: ArrayBuffer[String] = ArrayBuffer("https://www.zohoapis.sa", "https://sandbox.zohoapis.sa", "https://developer.zohoapis.sa", "https://accounts.zoho.sa/oauth/v2/token", "sa");
   val SANDBOX = "sandbox"
   val DEVELOPER = "developer"
   val ENVIRONMENT = "com$zoho$crm$api$Initializer$$environment"
@@ -356,6 +357,9 @@ object Constants {
   val TIME_ZONE = "java.util.TimeZone"
   val PRIMITIVE_TYPES: ArrayBuffer[String] = ArrayBuffer("String", "Long", "Boolean", "LocalDate", "OffsetDateTime", "Integer", "Double", "Object", "TimeZone")
   val SUB_TYPE = "sub_type"
+  val BODY = "body"
+  val FUNCTIONS = "v8/functions"
+  val FUNCTIONS_PATH = "/actions/"
   val MULTI_MODULE_LOOKUP = "multi_module_lookup"
   val TIME_RANGE_NAMESPACE = "com.zoho.crm.api.record.TimeRange"
   val CURRENTUSER = "CurrentUser"

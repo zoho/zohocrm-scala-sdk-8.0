@@ -38,7 +38,11 @@ class HeaderParamValidator[T] {
         }
       })
     }
-    DataTypeConverter.postConvert(value, value.getClass.getName).toString
+    var valueClassName = value.getClass.getName
+    if (value.isInstanceOf[util.Map[_, _]] || value.isInstanceOf[util.Collection[_]]){
+      valueClassName = Constants.OBJECT_NAMESPACE
+    }
+    DataTypeConverter.postConvert(value, valueClassName).toString
   }
 
   @throws[Exception]

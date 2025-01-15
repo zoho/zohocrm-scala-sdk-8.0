@@ -27,6 +27,7 @@ import com.zoho.crm.api.fields.Textarea
 import com.zoho.crm.api.fields.Tooltip
 import com.zoho.crm.api.fields.Unique
 import com.zoho.crm.api.fields.ViewType
+import com.zoho.crm.api.globalpicklists.Picklist
 import com.zoho.crm.api.util.Model
 import java.time.OffsetDateTime
 import scala.collection.mutable.HashMap
@@ -106,8 +107,8 @@ class ModuleFields extends Fields with Model	{
 	private var associationDetails:Option[AssociationDetails] = None
 	private var additionalColumn:Option[String] = None
 	private var fieldLabel:Option[String] = None
-	private var globalPicklist:Any = None
-	private var updateexistingrecords:Option[Boolean] = None
+	private var globalPicklist:Option[Picklist] = None
+	private var updateExistingRecords:Option[Boolean] = None
 	private var numberSeparator:Option[Boolean] = None
 	private var textarea:Option[Textarea] = None
 	private var staticField:Option[Boolean] = None
@@ -770,21 +771,21 @@ class ModuleFields extends Fields with Model	{
 		 this.keyModified("field_label") = 1
 	}
 
-	override def getGlobalPicklist() :Any	={
+	override def getGlobalPicklist() :Option[Picklist]	={
 		return  this.globalPicklist
 	}
 
-	override def setGlobalPicklist( globalPicklist: Any) 	={
+	override def setGlobalPicklist( globalPicklist: Option[Picklist]) 	={
 		 this.globalPicklist = globalPicklist
 		 this.keyModified("global_picklist") = 1
 	}
 
-	override def getUpdateexistingrecords() :Option[Boolean]	={
-		return  this.updateexistingrecords
+	override def getUpdateExistingRecords() :Option[Boolean]	={
+		return  this.updateExistingRecords
 	}
 
-	override def setUpdateexistingrecords( updateexistingrecords: Option[Boolean]) 	={
-		 this.updateexistingrecords = updateexistingrecords
+	override def setUpdateExistingRecords( updateExistingRecords: Option[Boolean]) 	={
+		 this.updateExistingRecords = updateExistingRecords
 		 this.keyModified("_update_existing_records") = 1
 	}
 

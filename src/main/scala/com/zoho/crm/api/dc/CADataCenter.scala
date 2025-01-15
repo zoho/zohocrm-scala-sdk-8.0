@@ -6,8 +6,8 @@ import com.zoho.crm.api.dc.DataCenter.Environment
  * This class represents the properties of Zoho CRM in CA Domain.
  */
 class CADataCenter extends DataCenter {
-  override def getIamUrl: String = "https://accounts.zoho.ca/oauth/v2/token"
-  override def getFileUploadUrl: String = "https://content.zohoapis.ca"
+  override def getIamUrl: String = "https://accounts.zohocloud.ca/oauth/v2/token"
+  override def getFileUploadUrl: String = "https://upload.zohocloud.ca"
 }
 
 object CADataCenter {

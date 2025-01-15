@@ -10,6 +10,7 @@ class PickListValues extends Model	{
 	private var id:Option[Long] = None
 	private var sequenceNumber:Option[Int] = None
 	private var displayValue:Option[String] = None
+	private var referenceValue:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getActualValue() :Option[String]	={
@@ -55,6 +56,15 @@ class PickListValues extends Model	{
 	def setDisplayValue( displayValue: Option[String]) 	={
 		 this.displayValue = displayValue
 		 this.keyModified("display_value") = 1
+	}
+
+	def getReferenceValue() :Option[String]	={
+		return  this.referenceValue
+	}
+
+	def setReferenceValue( referenceValue: Option[String]) 	={
+		 this.referenceValue = referenceValue
+		 this.keyModified("reference_value") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

@@ -5,15 +5,15 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable.ArrayBuffer
 
 class ResponseWrapper extends Model with ResponseHandler	{
-	private var emailssharingdetails:ArrayBuffer[EmailSharings] = _
+	private var emailsSharingDetails:ArrayBuffer[EmailSharings] = _
 	private var keyModified:HashMap[String, Int] = HashMap()
 
-	def getEmailssharingdetails() :ArrayBuffer[EmailSharings]	={
-		return  this.emailssharingdetails
+	def getEmailsSharingDetails() :ArrayBuffer[EmailSharings]	={
+		return  this.emailsSharingDetails
 	}
 
-	def setEmailssharingdetails( emailssharingdetails: ArrayBuffer[EmailSharings]) 	={
-		 this.emailssharingdetails = emailssharingdetails
+	def setEmailsSharingDetails( emailsSharingDetails: ArrayBuffer[EmailSharings]) 	={
+		 this.emailsSharingDetails = emailsSharingDetails
 		 this.keyModified("__emails_sharing_details") = 1
 	}
 

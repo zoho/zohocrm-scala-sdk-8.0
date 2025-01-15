@@ -20,6 +20,7 @@ class ImageUpload extends Model	{
 	private var createdByS:Option[MinifiedUser] = None
 	private var ownerS:Option[MinifiedUser] = None
 	private var modifiedByS:Option[MinifiedUser] = None
+	private var attachmentSourceS:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getPreviewIdS() :Option[String]	={
@@ -146,6 +147,15 @@ class ImageUpload extends Model	{
 	def setModifiedByS( modifiedByS: Option[MinifiedUser]) 	={
 		 this.modifiedByS = modifiedByS
 		 this.keyModified("Modified_By__s") = 1
+	}
+
+	def getAttachmentSourceS() :Option[String]	={
+		return  this.attachmentSourceS
+	}
+
+	def setAttachmentSourceS( attachmentSourceS: Option[String]) 	={
+		 this.attachmentSourceS = attachmentSourceS
+		 this.keyModified("Attachment_Source__s") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

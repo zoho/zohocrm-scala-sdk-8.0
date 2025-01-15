@@ -5,15 +5,15 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable.ArrayBuffer
 
 class ActionWrapper extends Model	{
-	private var emaildrafts:ArrayBuffer[ActionResponse] = _
+	private var emailDrafts:ArrayBuffer[ActionResponse] = _
 	private var keyModified:HashMap[String, Int] = HashMap()
 
-	def getEmaildrafts() :ArrayBuffer[ActionResponse]	={
-		return  this.emaildrafts
+	def getEmailDrafts() :ArrayBuffer[ActionResponse]	={
+		return  this.emailDrafts
 	}
 
-	def setEmaildrafts( emaildrafts: ArrayBuffer[ActionResponse]) 	={
-		 this.emaildrafts = emaildrafts
+	def setEmailDrafts( emailDrafts: ArrayBuffer[ActionResponse]) 	={
+		 this.emailDrafts = emailDrafts
 		 this.keyModified("__email_drafts") = 1
 	}
 

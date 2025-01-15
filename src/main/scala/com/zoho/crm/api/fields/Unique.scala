@@ -5,6 +5,7 @@ import scala.collection.mutable.HashMap
 
 class Unique extends Model	{
 	private var casesensitive:Option[String] = None
+	private var disable:Any = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getCasesensitive() :Option[String]	={
@@ -14,6 +15,15 @@ class Unique extends Model	{
 	def setCasesensitive( casesensitive: Option[String]) 	={
 		 this.casesensitive = casesensitive
 		 this.keyModified("casesensitive") = 1
+	}
+
+	def getDisable() :Any	={
+		return  this.disable
+	}
+
+	def setDisable( disable: Any) 	={
+		 this.disable = disable
+		 this.keyModified("_disable") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

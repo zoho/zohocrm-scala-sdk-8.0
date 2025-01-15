@@ -7,6 +7,7 @@ import scala.collection.mutable.ArrayBuffer
 class Sections extends Model	{
 	private var displayLabel:Option[String] = None
 	private var sequenceNumber:Option[Int] = None
+	private var actionsAllowed:Option[ActionsAllowed] = None
 	private var issubformsection:Option[Boolean] = None
 	private var tabTraversal:Option[String] = None
 	private var apiName:Option[String] = None
@@ -36,6 +37,15 @@ class Sections extends Model	{
 	def setSequenceNumber( sequenceNumber: Option[Int]) 	={
 		 this.sequenceNumber = sequenceNumber
 		 this.keyModified("sequence_number") = 1
+	}
+
+	def getActionsAllowed() :Option[ActionsAllowed]	={
+		return  this.actionsAllowed
+	}
+
+	def setActionsAllowed( actionsAllowed: Option[ActionsAllowed]) 	={
+		 this.actionsAllowed = actionsAllowed
+		 this.keyModified("actions_allowed") = 1
 	}
 
 	def getIssubformsection() :Option[Boolean]	={

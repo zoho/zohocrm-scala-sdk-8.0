@@ -5,16 +5,16 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable.ArrayBuffer
 
 class ResponseWrapper extends Model with ResponseHandler	{
-	private var ziaorgenrichment:ArrayBuffer[ZiaOrgEnrichment] = _
+	private var ziaOrgEnrichment:ArrayBuffer[ZiaOrgEnrichment] = _
 	private var info:Option[Info] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
-	def getZiaorgenrichment() :ArrayBuffer[ZiaOrgEnrichment]	={
-		return  this.ziaorgenrichment
+	def getZiaOrgEnrichment() :ArrayBuffer[ZiaOrgEnrichment]	={
+		return  this.ziaOrgEnrichment
 	}
 
-	def setZiaorgenrichment( ziaorgenrichment: ArrayBuffer[ZiaOrgEnrichment]) 	={
-		 this.ziaorgenrichment = ziaorgenrichment
+	def setZiaOrgEnrichment( ziaOrgEnrichment: ArrayBuffer[ZiaOrgEnrichment]) 	={
+		 this.ziaOrgEnrichment = ziaOrgEnrichment
 		 this.keyModified("__zia_org_enrichment") = 1
 	}
 

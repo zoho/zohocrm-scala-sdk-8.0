@@ -74,7 +74,7 @@ class FileStore(private var filePath: String) extends TokenStore {
       token match {
         case oauthToken: OAuthToken =>
           src = Source.fromFile(this.filePath)
-          val allContents: collection.mutable.ListBuffer[String] = src.getLines.toList.to(collection.mutable.ListBuffer)
+          val allContents: collection.mutable.ListBuffer[String] = src.getLines().filter(_.nonEmpty).toList.to(collection.mutable.ListBuffer)
           var isRowPresent = false
           if(allContents.size > 1) {
             for (i <- 1 until allContents.length) {

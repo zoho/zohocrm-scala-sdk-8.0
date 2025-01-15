@@ -14,7 +14,7 @@ class Notification extends Event with Model	{
 	private var fields:Option[HashMap[String, Any]] = _
 	private var notifyOnRelatedAction:Option[Boolean] = None
 	private var returnAffectedFieldValues:Option[Boolean] = None
-	private var deleteevents:Choice[Boolean] = _
+	private var deleteEvents:Choice[Boolean] = _
 	private var resourceName:Option[String] = None
 	private var channelExpiry:Option[OffsetDateTime] = None
 	private var resourceId:Option[Long] = None
@@ -85,12 +85,12 @@ class Notification extends Event with Model	{
 		 this.keyModified("return_affected_field_values") = 1
 	}
 
-	def getDeleteevents() :Choice[Boolean]	={
-		return  this.deleteevents
+	def getDeleteEvents() :Choice[Boolean]	={
+		return  this.deleteEvents
 	}
 
-	def setDeleteevents( deleteevents: Choice[Boolean]) 	={
-		 this.deleteevents = deleteevents
+	def setDeleteEvents( deleteEvents: Choice[Boolean]) 	={
+		 this.deleteEvents = deleteEvents
 		 this.keyModified("_delete_events") = 1
 	}
 

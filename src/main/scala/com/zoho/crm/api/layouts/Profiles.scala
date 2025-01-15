@@ -7,8 +7,8 @@ class Profiles extends Model	{
 	private var default1:Option[Boolean] = None
 	private var name:Option[String] = None
 	private var id:Option[Long] = None
-	private var defaultview:Option[DefaultView] = None
-	private var defaultassignmentview:Option[DefaultAssignmentView] = None
+	private var defaultView:Option[DefaultView] = None
+	private var defaultAssignmentView:Option[DefaultAssignmentView] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getDefault() :Option[Boolean]	={
@@ -38,21 +38,21 @@ class Profiles extends Model	{
 		 this.keyModified("id") = 1
 	}
 
-	def getDefaultview() :Option[DefaultView]	={
-		return  this.defaultview
+	def getDefaultView() :Option[DefaultView]	={
+		return  this.defaultView
 	}
 
-	def setDefaultview( defaultview: Option[DefaultView]) 	={
-		 this.defaultview = defaultview
+	def setDefaultView( defaultView: Option[DefaultView]) 	={
+		 this.defaultView = defaultView
 		 this.keyModified("_default_view") = 1
 	}
 
-	def getDefaultassignmentview() :Option[DefaultAssignmentView]	={
-		return  this.defaultassignmentview
+	def getDefaultAssignmentView() :Option[DefaultAssignmentView]	={
+		return  this.defaultAssignmentView
 	}
 
-	def setDefaultassignmentview( defaultassignmentview: Option[DefaultAssignmentView]) 	={
-		 this.defaultassignmentview = defaultassignmentview
+	def setDefaultAssignmentView( defaultAssignmentView: Option[DefaultAssignmentView]) 	={
+		 this.defaultAssignmentView = defaultAssignmentView
 		 this.keyModified("_default_assignment_view") = 1
 	}
 

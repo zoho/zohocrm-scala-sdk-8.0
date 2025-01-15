@@ -19,6 +19,9 @@ class Picklist extends Model	{
 	private var presence:Option[Boolean] = None
 	private var pickListValuesSortedLexically:Option[Boolean] = None
 	private var pickListValues:ArrayBuffer[PickListValues] = _
+	private var associatedFieldsCount:Option[Int] = None
+	private var usedInModules:ArrayBuffer[Module] = _
+	private var customizable:Option[Boolean] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getDisplayLabel() :Option[String]	={
@@ -127,6 +130,33 @@ class Picklist extends Model	{
 	def setPickListValues( pickListValues: ArrayBuffer[PickListValues]) 	={
 		 this.pickListValues = pickListValues
 		 this.keyModified("pick_list_values") = 1
+	}
+
+	def getAssociatedFieldsCount() :Option[Int]	={
+		return  this.associatedFieldsCount
+	}
+
+	def setAssociatedFieldsCount( associatedFieldsCount: Option[Int]) 	={
+		 this.associatedFieldsCount = associatedFieldsCount
+		 this.keyModified("associated_fields_count") = 1
+	}
+
+	def getUsedInModules() :ArrayBuffer[Module]	={
+		return  this.usedInModules
+	}
+
+	def setUsedInModules( usedInModules: ArrayBuffer[Module]) 	={
+		 this.usedInModules = usedInModules
+		 this.keyModified("used_in_modules") = 1
+	}
+
+	def getCustomizable() :Option[Boolean]	={
+		return  this.customizable
+	}
+
+	def setCustomizable( customizable: Option[Boolean]) 	={
+		 this.customizable = customizable
+		 this.keyModified("customizable") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

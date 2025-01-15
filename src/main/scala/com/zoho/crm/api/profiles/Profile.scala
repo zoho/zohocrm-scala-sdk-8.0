@@ -8,7 +8,7 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable.ArrayBuffer
 
 class Profile extends Model	{
-	private var defaultview:Option[DefaultView] = None
+	private var defaultView:Option[DefaultView] = None
 	private var name:Option[String] = None
 	private var description:Option[String] = None
 	private var id:Option[Long] = None
@@ -27,12 +27,12 @@ class Profile extends Model	{
 	private var createdBy:Option[MinifiedUser] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
-	def getDefaultview() :Option[DefaultView]	={
-		return  this.defaultview
+	def getDefaultView() :Option[DefaultView]	={
+		return  this.defaultView
 	}
 
-	def setDefaultview( defaultview: Option[DefaultView]) 	={
-		 this.defaultview = defaultview
+	def setDefaultView( defaultView: Option[DefaultView]) 	={
+		 this.defaultView = defaultView
 		 this.keyModified("_default_view") = 1
 	}
 

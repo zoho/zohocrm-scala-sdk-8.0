@@ -11,6 +11,7 @@ class Attachment extends Model	{
 	private var createdBy:Option[MinifiedUser] = None
 	private var parentId:Option[ParentId] = None
 	private var sharingPermission:Option[String] = None
+	private var recordStatusS:Option[String] = None
 	private var attachmentType:Option[Int] = None
 	private var id:Option[Long] = None
 	private var modifiedTime:Option[OffsetDateTime] = None
@@ -23,6 +24,10 @@ class Attachment extends Model	{
 	private var seModule:Option[String] = None
 	private var state:Option[String] = None
 	private var linkUrl:Option[String] = None
+	private var attachmentSourceS:Option[String] = None
+	private var fileIdS:Option[String] = None
+	private var fieldStates:Option[String] = None
+	private var ziaVisions:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getOwner() :Option[MinifiedUser]	={
@@ -68,6 +73,15 @@ class Attachment extends Model	{
 	def setsharingPermission( sharingPermission: Option[String]) 	={
 		 this.sharingPermission = sharingPermission
 		 this.keyModified("$sharing_permission") = 1
+	}
+
+	def getRecordStatusS() :Option[String]	={
+		return  this.recordStatusS
+	}
+
+	def setRecordStatusS( recordStatusS: Option[String]) 	={
+		 this.recordStatusS = recordStatusS
+		 this.keyModified("Record_Status__s") = 1
 	}
 
 	def getattachmentType() :Option[Int]	={
@@ -176,6 +190,42 @@ class Attachment extends Model	{
 	def setlinkUrl( linkUrl: Option[String]) 	={
 		 this.linkUrl = linkUrl
 		 this.keyModified("$link_url") = 1
+	}
+
+	def getAttachmentSourceS() :Option[String]	={
+		return  this.attachmentSourceS
+	}
+
+	def setAttachmentSourceS( attachmentSourceS: Option[String]) 	={
+		 this.attachmentSourceS = attachmentSourceS
+		 this.keyModified("Attachment_Source__s") = 1
+	}
+
+	def getFileIdS() :Option[String]	={
+		return  this.fileIdS
+	}
+
+	def setFileIdS( fileIdS: Option[String]) 	={
+		 this.fileIdS = fileIdS
+		 this.keyModified("File_Id__s") = 1
+	}
+
+	def getfieldStates() :Option[String]	={
+		return  this.fieldStates
+	}
+
+	def setfieldStates( fieldStates: Option[String]) 	={
+		 this.fieldStates = fieldStates
+		 this.keyModified("$field_states") = 1
+	}
+
+	def getziaVisions() :Option[String]	={
+		return  this.ziaVisions
+	}
+
+	def setziaVisions( ziaVisions: Option[String]) 	={
+		 this.ziaVisions = ziaVisions
+		 this.keyModified("$zia_visions") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

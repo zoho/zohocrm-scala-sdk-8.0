@@ -71,6 +71,11 @@ object DataCenter {
       else if (config.contains(Constants.DEVELOPER)) return CADataCenter.DEVELOPER
       return CADataCenter.PRODUCTION
     }
+    else if (Constants.SA_DATACENTER.exists(a => a.equals(config))) {
+      if (config.contains(Constants.SANDBOX)) return SADataCenter.SANDBOX
+      else if (config.contains(Constants.DEVELOPER)) return SADataCenter.DEVELOPER
+      return SADataCenter.PRODUCTION
+    }
     null
   }
 }

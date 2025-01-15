@@ -1,13 +1,15 @@
 package com.zoho.crm.api.fields
 
+import com.zoho.crm.api.modules.MinifiedModule
+import com.zoho.crm.api.relatedlists.RelatedList
 import com.zoho.crm.api.util.Model
 import scala.collection.mutable.HashMap
 
 class RollupSummary extends Model	{
 	private var returnType:Option[String] = None
 	private var expression:Option[Expression] = None
-	private var basedOnModule:Option[MinifiedField] = None
-	private var relatedList:Option[MinifiedField] = None
+	private var basedOnModule:Option[MinifiedModule] = None
+	private var relatedList:Option[RelatedList] = None
 	private var rollupBasedOn:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
@@ -29,20 +31,20 @@ class RollupSummary extends Model	{
 		 this.keyModified("expression") = 1
 	}
 
-	def getBasedOnModule() :Option[MinifiedField]	={
+	def getBasedOnModule() :Option[MinifiedModule]	={
 		return  this.basedOnModule
 	}
 
-	def setBasedOnModule( basedOnModule: Option[MinifiedField]) 	={
+	def setBasedOnModule( basedOnModule: Option[MinifiedModule]) 	={
 		 this.basedOnModule = basedOnModule
 		 this.keyModified("based_on_module") = 1
 	}
 
-	def getRelatedList() :Option[MinifiedField]	={
+	def getRelatedList() :Option[RelatedList]	={
 		return  this.relatedList
 	}
 
-	def setRelatedList( relatedList: Option[MinifiedField]) 	={
+	def setRelatedList( relatedList: Option[RelatedList]) 	={
 		 this.relatedList = relatedList
 		 this.keyModified("related_list") = 1
 	}
