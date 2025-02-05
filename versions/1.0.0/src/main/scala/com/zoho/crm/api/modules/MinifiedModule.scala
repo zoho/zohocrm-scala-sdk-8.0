@@ -8,6 +8,7 @@ class MinifiedModule extends Model	{
 	private var id:Option[Long] = None
 	private var moduleName:Option[String] = None
 	private var module:Option[String] = None
+	private var crypt:Option[Boolean] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getAPIName() :Option[String]	={
@@ -44,6 +45,15 @@ class MinifiedModule extends Model	{
 	def setModule( module: Option[String]) 	={
 		 this.module = module
 		 this.keyModified("module") = 1
+	}
+
+	def getCrypt() :Option[Boolean]	={
+		return  this.crypt
+	}
+
+	def setCrypt( crypt: Option[Boolean]) 	={
+		 this.crypt = crypt
+		 this.keyModified("crypt") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

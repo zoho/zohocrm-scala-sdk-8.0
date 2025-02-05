@@ -715,6 +715,7 @@ object  Utility {
           val linkingModule = linkingDetails.get.getModule()
           if (linkingModule != null && linkingModule.isDefined){
             fieldDetail.put(Constants.MODULE.toLowerCase, linkingModule.get.getAPIName())
+            module = new MinifiedModule
             module.setAPIName(linkingModule.get.getAPIName())
             module.setId(linkingModule.get.getId())
           }
@@ -730,6 +731,7 @@ object  Utility {
           val linkingModule = linkingDetails.get.getModule()
           if (linkingModule != null && linkingModule.isDefined){
             fieldDetail.put(Constants.MODULE.toLowerCase, linkingModule.get.getAPIName())
+            module = new MinifiedModule
             module.setAPIName(linkingModule.get.getAPIName())
             module.setId(linkingModule.get.getId())
           }
@@ -782,7 +784,7 @@ object  Utility {
     val fieldAPINamesInteger = Array[String]("integer")
     val fieldAPINamesBoolean = Array[String]("boolean")
     val fieldAPINamesLong = Array[String]("long", "bigint")
-    val fieldAPINamesDouble = Array[String]("double", "percent", "lookup", "currency")
+    val fieldAPINamesDouble = Array[String]("double", "percent", "currency")
     val fieldAPINamesFieldFile = Array[String](  "fileupload")
     val fieldAPINamesDateTime = Array[String]("datetime", "event_reminder" )
     val fieldAPINamesDate = Array[String]("date")
@@ -845,7 +847,7 @@ object  Utility {
     }
     for ( fieldAPIName <- fieldAPINamesMultiUserLookUp ) {
       apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
-      apiTypeVsStructureName.put(fieldAPIName, Constants.USER_NAMESPACE)
+      apiTypeVsStructureName.put(fieldAPIName, Constants.RECORD_NAMESPACE)
     }
     for ( fieldAPIName <- fieldAPINamesFieldFile ) {
       apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
