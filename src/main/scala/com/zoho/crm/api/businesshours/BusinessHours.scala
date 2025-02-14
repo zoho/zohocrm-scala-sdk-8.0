@@ -13,6 +13,7 @@ class BusinessHours extends Model	{
 	private var sameAsEveryday:Option[Boolean] = None
 	private var dailyTiming:ArrayBuffer[String] = _
 	private var customTiming:ArrayBuffer[BreakHoursCustomTiming] = _
+	private var timezone:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getWeekStartsOn() :Choice[String]	={
@@ -76,6 +77,15 @@ class BusinessHours extends Model	{
 	def setCustomTiming( customTiming: ArrayBuffer[BreakHoursCustomTiming]) 	={
 		 this.customTiming = customTiming
 		 this.keyModified("custom_timing") = 1
+	}
+
+	def getTimezone() :Option[String]	={
+		return  this.timezone
+	}
+
+	def setTimezone( timezone: Option[String]) 	={
+		 this.timezone = timezone
+		 this.keyModified("timezone") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={
