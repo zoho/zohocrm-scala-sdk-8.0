@@ -1,0 +1,9 @@
+.bsp
+project/project
+project/target
+target
+.vscode
+.metals
+bin
+.idea
+out
