@@ -26,6 +26,11 @@ jobs:
             ~/.sbt
           key: 'os-${{ runner.os }}-sbt-${{ hashFiles(''build.sbt'', ''project/build.properties'', ''project/plugins.sbt'') }}'
           restore-keys: 'os-${{ runner.os }}-sbt-'
+      # New step: Set up Scala and sbt
+      - name: Set up Scala and sbt
+        uses: olafurpg/setup-scala@v11
+        with:
+          sbt-version: '1.9.2'   # Change to your required version if needed
       - name: 'Import GPG Key'
         uses: 'crazy-max/ghaction-import-gpg@v3'
         with:
