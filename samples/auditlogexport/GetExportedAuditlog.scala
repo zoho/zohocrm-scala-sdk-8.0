@@ -26,40 +26,40 @@ object GetExportedAuditlog {
           if (apiResponse.isExpected) {
             apiResponse.getObject match {
               case responseWrapper: ResponseWrapper =>
-                val auditLogExports = responseWrapper.getAuditLogExport
+                val auditLogExports = responseWrapper.getAuditLogExport()
                 auditLogExports.foreach { auditLogExport =>
-                  val criteria = auditLogExport.getCriteria
+                  val criteria = auditLogExport.getCriteria()
                   if (criteria != null) printCriteria(criteria)
 
-                  println(s"AuditLogExport Id : ${auditLogExport.getId}")
-                  println(s"AuditLogExport Status : ${auditLogExport.getStatus}")
-                  val createdBy = auditLogExport.getCreatedBy
+                  println(s"AuditLogExport Id : ${auditLogExport.getId()}")
+                  println(s"AuditLogExport Status : ${auditLogExport.getStatus()}")
+                  val createdBy = auditLogExport.getCreatedBy()
                   if (createdBy != null) {
                     createdBy match {
                       case Some(created_by)=>
-                        println(s"AuditLogExport User Id : ${created_by.getId}")
-                        println(s"AuditLogExport User Name : ${created_by.getName}")
+                        println(s"AuditLogExport User Id : ${created_by.getId()}")
+                        println(s"AuditLogExport User Name : ${created_by.getName()}")
                     }
                   }
-                  val downloadLinks = auditLogExport.getDownloadLinks
+                  val downloadLinks = auditLogExport.getDownloadLinks()
                   if (downloadLinks != null) {
                     downloadLinks.foreach(link => println(s"AuditLogExport DownloadLink : $link"))
-                    println(s"AuditLogExport JobStartTime : ${auditLogExport.getJobStartTime}")
-                    println(s"AuditLogExport JobEndTime : ${auditLogExport.getJobEndTime}")
-                    println(s"AuditLogExport ExpiryDate : ${auditLogExport.getExpiryDate}")
+                    println(s"AuditLogExport JobStartTime : ${auditLogExport.getJobStartTime()}")
+                    println(s"AuditLogExport JobEndTime : ${auditLogExport.getJobEndTime()}")
+                    println(s"AuditLogExport ExpiryDate : ${auditLogExport.getExpiryDate()}")
                   }
                 }
 
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
                 println("Details: ")
-                exception.getDetails.foreach { details =>
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage}")
+                println(s"Message: ${exception.getMessage()}")
 
               case _ =>
                 val responseObject = apiResponse.getModel
@@ -76,27 +76,27 @@ object GetExportedAuditlog {
   private def printCriteria(criteria: Option[Criteria]): Unit = {
     criteria match {
       case Some(criteria_1) =>
-        if (criteria_1.getComparator != null) {
-          println(s"ExportedAuditlogs Criteria Comparator: ${criteria_1.getComparator}")
+        if (criteria_1.getComparator() != null) {
+          println(s"ExportedAuditlogs Criteria Comparator: ${criteria_1.getComparator()}")
         }
-        if (criteria_1.getValue != null) {
-          println(s"ExportedAuditlogs Criteria Value: ${criteria_1.getValue}")
+        if (criteria_1.getValue() != null) {
+          println(s"ExportedAuditlogs Criteria Value: ${criteria_1.getValue()}")
         }
-        if (criteria_1.getField != null) {
+        if (criteria_1.getField() != null) {
           criteria_1.getField() match {
             case Some(field) =>
-              println(s"ExportedAuditlogs Criteria Field Name: ${field.getAPIName}")
+              println(s"ExportedAuditlogs Criteria Field Name: ${field.getAPIName()}")
           }
         }
-        val criteriaGroup = criteria_1.getGroup
+        val criteriaGroup = criteria_1.getGroup()
         if (criteriaGroup != null)
         {
           criteriaGroup.foreach { criteria_group =>
             printCriteria(Option(criteria_group))
           }
         }
-        if (criteria_1.getGroupOperator != null) {
-          println(s"ExportedAuditlogs Criteria Group Operator: ${criteria_1.getGroupOperator}")
+        if (criteria_1.getGroupOperator() != null) {
+          println(s"ExportedAuditlogs Criteria Group Operator: ${criteria_1.getGroupOperator()}")
         }
     }
   }

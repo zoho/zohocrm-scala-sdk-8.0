@@ -10,7 +10,7 @@ import com.zoho.crm.api.util.APIResponse
 object GetCallPreference {
 
   @throws[Exception]
-  def getCallPreference(): Unit = {
+  private def getCallPreference(): Unit = {
     val callPreferencesOperations = new CallPreferencesOperations()
     val response : Option[APIResponse[ResponseHandler]]= callPreferencesOperations.getCallPreference()
 
@@ -28,21 +28,21 @@ object GetCallPreference {
 
             responseHandler match {
               case responseWrapper: ResponseWrapper =>
-                val callPreferences = responseWrapper.getCallPreferences
+                val callPreferences = responseWrapper.getCallPreferences()
                 callPreferences match {
                   case Some(callPreference) =>
-                    println(s"CallPreferences ShowFromNumber: ${callPreference.getShowFromNumber}")
-                    println(s"CallPreferences ShowToNumber: ${callPreference.getShowToNumber}")
+                    println(s"CallPreferences ShowFromNumber: ${callPreference.getShowFromNumber()}")
+                    println(s"CallPreferences ShowToNumber: ${callPreference.getShowToNumber()}")
                 }
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
-                exception.getDetails.foreach { details =>
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage}")
+                println(s"Message: ${exception.getMessage()}")
 
               case _ =>
                 println("Unexpected response handler")

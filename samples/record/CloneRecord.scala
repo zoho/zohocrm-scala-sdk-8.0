@@ -12,7 +12,7 @@ import com.zoho.crm.api.util.Model
 object CloneRecord {
 
   @throws[Exception]
-  def cloneRecord(moduleAPIName: String, recordId: Long): Unit = {
+  private def cloneRecord(moduleAPIName: String, recordId: Long): Unit = {
     val recordOperations = new RecordOperations(moduleAPIName)
     val response: Option[APIResponse[ActionHandler]] = recordOperations.cloneRecord(recordId)
 
@@ -24,41 +24,41 @@ object CloneRecord {
           if (apiResponse.isExpected) {
             apiResponse.getObject match {
               case actionWrapper: ActionWrapper =>
-                val actionResponses = actionWrapper.getData
+                val actionResponses = actionWrapper.getData()
                 actionResponses.foreach {
                   case successResponse: SuccessResponse =>
-                    println(s"Status: ${successResponse.getStatus.getValue}")
-                    println(s"Code: ${successResponse.getCode.getValue}")
+                    println(s"Status: ${successResponse.getStatus().getValue}")
+                    println(s"Code: ${successResponse.getCode().getValue}")
                     println("Details: ")
-                    successResponse.getDetails.foreach { details =>
+                    successResponse.getDetails().foreach { details =>
                       details.foreach { case (key, value) =>
                         println(s"$key: $value")
                       }
                     }
-                    println(s"Message: ${successResponse.getMessage.getValue}")
+                    println(s"Message: ${successResponse.getMessage().getValue}")
 
                   case exception: APIException =>
-                    println(s"Status: ${exception.getStatus.getValue}")
-                    println(s"Code: ${exception.getCode.getValue}")
+                    println(s"Status: ${exception.getStatus().getValue}")
+                    println(s"Code: ${exception.getCode().getValue}")
                     println("Details: ")
-                    exception.getDetails.foreach { details =>
+                    exception.getDetails().foreach { details =>
                       details.foreach { case (key, value) =>
                         println(s"$key: $value")
                       }
                     }
-                    println(s"Message: ${exception.getMessage.getValue}")
+                    println(s"Message: ${exception.getMessage().getValue}")
                 }
 
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
                 println("Details: ")
-                exception.getDetails.foreach { details =>
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage.getValue}")
+                println(s"Message: ${exception.getMessage().getValue}")
 
               case responseObject: Model =>
                 val fields = responseObject.getClass.getDeclaredFields
@@ -75,6 +75,7 @@ object CloneRecord {
               println(s"${field.getName}: ${field.get(responseObject)}")
             }
           }
+        case None => ???
       }
     }
   }

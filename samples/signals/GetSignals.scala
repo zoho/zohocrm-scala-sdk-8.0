@@ -28,39 +28,39 @@ object GetSignals {
 
             responseHandler match {
               case responseWrapper: ResponseWrapper =>
-                val signals = responseWrapper.getSignals
+                val signals = responseWrapper.getSignals()
                 signals.foreach { signal =>
-                  println(s"Signals DisplayLabel: ${signal.getDisplayLabel}")
-                  val extension = signal.getExtension.get
+                  println(s"Signals DisplayLabel: ${signal.getDisplayLabel()}")
+                  val extension = signal.getExtension().get
                   if (extension != null) {
-                    println(s"Signals Extension DisplayLabel: ${extension.getDisplayLabel}")
-                    println(s"Signals Extension Namespace: ${extension.getNamespace}")
-                    println(s"Signals Extension Id: ${extension.getId}")
-                    println(s"Signals Extension Type: ${extension.getType}")
+                    println(s"Signals Extension DisplayLabel: ${extension.getDisplayLabel()}")
+                    println(s"Signals Extension Namespace: ${extension.getNamespace()}")
+                    println(s"Signals Extension Id: ${extension.getId()}")
+                    println(s"Signals Extension Type: ${extension.getType()}")
                   }
 
-                  val featureAvailability = signal.getFeatureAvailability.get
+                  val featureAvailability = signal.getFeatureAvailability().get
                   if (featureAvailability != null) {
-                    println(s"Signals FeatureAvailability Scoring: ${featureAvailability.getScoring}")
-                    println(s"Signals FeatureAvailability Signals: ${featureAvailability.getSignals}")
+                    println(s"Signals FeatureAvailability Scoring: ${featureAvailability.getScoring()}")
+                    println(s"Signals FeatureAvailability Signals: ${featureAvailability.getSignals()}")
                   }
 
-                  println(s"Signals Namespace: ${signal.getNamespace}")
-                  println(s"Signals ChatEnabled: ${signal.getChatEnabled}")
-                  println(s"Signals Id: ${signal.getId}")
-                  println(s"Signals Enabled: ${signal.getEnabled}")
+                  println(s"Signals Namespace: ${signal.getNamespace()}")
+                  println(s"Signals ChatEnabled: ${signal.getChatEnabled()}")
+                  println(s"Signals Id: ${signal.getId()}")
+                  println(s"Signals Enabled: ${signal.getEnabled()}")
                 }
 
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
                 println("Details: ")
-                exception.getDetails.foreach { details =>
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage}")
+                println(s"Message: ${exception.getMessage()}")
 
               case _ => println("Unexpected response type.")
             }

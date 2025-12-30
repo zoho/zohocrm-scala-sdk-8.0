@@ -46,26 +46,26 @@ object MassDeleteTags {
           if (apiResponse.isExpected) {
             apiResponse.getObject match {
               case successResponse: SuccessResponse =>
-                println(s"Status: ${successResponse.getStatus.getValue}")
-                println(s"Code: ${successResponse.getCode.getValue}")
+                println(s"Status: ${successResponse.getStatus().getValue}")
+                println(s"Code: ${successResponse.getCode().getValue}")
                 println("Details: ")
-                successResponse.getDetails.foreach { details =>
+                successResponse.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${successResponse.getMessage}")
+                println(s"Message: ${successResponse.getMessage()}")
 
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
                 println("Details: ")
-                exception.getDetails.foreach { details =>
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage}")
+                println(s"Message: ${exception.getMessage()}")
             }
           } else {
             val responseObject = apiResponse.getModel

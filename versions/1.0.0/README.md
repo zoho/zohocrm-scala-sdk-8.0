@@ -241,7 +241,7 @@ In case of default File Persistence, the user can persist tokens in the local dr
 import com.zoho.api.authenticator.store.FileStore
 
 //Parameter containing the absolute file path to store tokens
-var  tokenstore = new FileStore("/Users/user_name/Documents/scala_sdk_token.txt")
+var  tokenstore = new FileStore("./scala_sdk_token.txt")
 ```
 
 ### Custom Persistence
@@ -356,7 +356,7 @@ The **environment** key contains the domain information to make API calls. The *
     */
     var logger = new Logger.Builder()
     .level(Logger.Levels.ALL)
-    .filePath("/Users/Documents/scala_sdk_log.log")
+    .filePath("./scala_sdk_log.log")
     .build
     ```
 
@@ -387,7 +387,7 @@ The **environment** key contains the domain information to make API calls. The *
 
   - Use the following method for File Store
   ```scala
-    var tokenstore = new FileStore("/Users/user_name/Documents/scala_sdk_token.txt")
+    var tokenstore = new FileStore("./scala_sdk_token.txt")
   ```
   
   - Use the following method for Custom Store
@@ -423,7 +423,7 @@ The **environment** key contains the domain information to make API calls. The *
 - The path containing the absolute directory path to store user-specific files containing module fields information. By default, the SDK stores the user-specific files in a current working directory.
 
     ```scala
-    var resourcePath = "/Users/Documents"
+    var resourcePath = "./"
     ```
 
 ## Initializing the Application
@@ -445,12 +445,12 @@ object Initialize {
 
   @throws[Exception]
   def initialize(): Unit = {
-    val loggerInstance = new Logger.Builder().level(Logger.Levels.ALL).filePath("/Users/Documents/scala_sdk_log.log").build
+    val loggerInstance = new Logger.Builder().level(Logger.Levels.ALL).filePath("./scala_sdk_log.log").build
     val env = USDataCenter.PRODUCTION
     val token = new OAuthToken.Builder().clientID("clientId").clientSecret("clientSecret").refreshToken("refreshToken").build()
     val tokenstore = new DBStore.Builder().host(Option("hostName")).databaseName(Option("databaseName")).tableName(Option("tableName")).userName(Option("userName")).password(Option("password")).portNumber(Option("portNumber")).build
     val config: SDKConfig = new SDKConfig.Builder().pickListValidation(false).autoRefreshFields(false).build
-    val resourcePath = "/Users/Documents"
+    val resourcePath = "./"
     new Initializer.Builder().environment(env).token(token).store(tokenstore).SDKConfig(config).resourcePath(resourcePath).logger(loggerInstance).initialize()
   }
 }
@@ -646,17 +646,17 @@ import com.zoho.crm.api.{Initializer, ParameterMap, SDKConfig}
 object MultiThread {
   @throws[SDKException]
   def main(args: Array[String]): Unit = {
-    val loggerInstance = new Logger.Builder().level(Logger.Levels.ALL).filePath("/Users/Documents/scala-sdk-logs.log").build
+    val loggerInstance = new Logger.Builder().level(Logger.Levels.ALL).filePath("./scala-sdk-logs.log").build
     val env = USDataCenter.PRODUCTION
-    val tokenstore = new FileStore("/Users/Documents/scala_sdk_token.txt")
-    val token1 = new OAuthToken.Builder().clientID("1000.xxxxx").clientSecret("xxxxxx").refreshToken("1000.xx.xx").build()
-    val resourcePath = "/Users/Documents/"
+    val tokenstore = new FileStore("./scala_sdk_token.txt")
+    val token1 = new OAuthToken.Builder().clientID("clientID").clientSecret("xxxxxx").refreshToken("refreshToken").build()
+    val resourcePath = "./"
     val user1Config = new SDKConfig.Builder().autoRefreshFields(false).pickListValidation(true).build
     new Initializer.Builder().environment(env).token(token1).store(tokenstore).SDKConfig(user1Config).resourcePath(resourcePath).logger(loggerInstance).initialize()
     var multiThread = new MultiThread(env, token1, "Deals", user1Config)
     multiThread.start()
     val environment = USDataCenter.PRODUCTION
-    val token2 = new OAuthToken.Builder().clientID("1000.xxxxx").clientSecret("xxxxx").refreshToken("1000.xxxx.xxxxx").build()
+    val token2 = new OAuthToken.Builder().clientID("clientID").clientSecret("xxxxx").refreshToken("refreshToken").build()
     val user2Config = new SDKConfig.Builder().autoRefreshFields(true).pickListValidation(false).build
     multiThread = new MultiThread(environment, token2, "Leads", user2Config)
     multiThread.start()
@@ -706,11 +706,11 @@ import com.zoho.crm.api.record.RecordOperations.GetRecordsParam
 object MultiThread {
   @throws[Exception]
   def main(args: Array[String]): Unit = {
-    val loggerInstance = new Logger.Builder().level(Logger.Levels.ALL).filePath("/Users/scala-sdk-logs.log").build
+    val loggerInstance = new Logger.Builder().level(Logger.Levels.ALL).filePath("./scala-sdk-logs.log").build
     val env = USDataCenter.PRODUCTION
-    val tokenstore = new FileStore("/Users/Documents/scala_sdk_token.txt")
-    val token = new OAuthToken.Builder().clientID("1000.xxx").clientSecret("xxxxx").refreshToken("1000.xxxxx.xxxxx").build()
-    val resourcePath = "/Users/Documents"
+    val tokenstore = new FileStore("./scala_sdk_token.txt")
+    val token = new OAuthToken.Builder().clientID("clientID").clientSecret("xxxxx").refreshToken("refreshToken").build()
+    val resourcePath = "./"
     val sdkConfig = new SDKConfig.Builder().autoRefreshFields(false).pickListValidation(true).build
     new Initializer.Builder().environment(env).token(token).store(tokenstore).SDKConfig(sdkConfig).resourcePath(resourcePath).logger(loggerInstance).initialize()
     var mtsu = new MultiThread("Deals")
@@ -768,7 +768,7 @@ object CreateRecord {
     record1.addFieldValue(new Field.Leads().City, "City")
     record1.addFieldValue(new Field.Leads().LastName, "Last Name")
     record1.addFieldValue(new Field.Leads().FirstName, "First Name")
-    record1.addFieldValue(new Field.Leads().Company, "KKRNP")
+    record1.addFieldValue(new Field.Leads().Company, "Zoho")
     val tag = new Tag
     tag.setName(Option("Testtask"))
     record1.setTag(ArrayBuffer[Tag](tag))

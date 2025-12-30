@@ -14,7 +14,7 @@ object GetSharingRuleSummary {
 
   def getSharingRuleSummary(moduleAPIName: String): Unit = {
     val sharingRulesOperations = new SharingRulesOperations(Option(moduleAPIName))
-    val response = sharingRulesOperations.getSharingRuleSummary
+    val response = sharingRulesOperations.getSharingRuleSummary()
 
     if (response != null) {
       response match {
@@ -28,25 +28,25 @@ object GetSharingRuleSummary {
             val responseHandler = apiResponse.getObject
             responseHandler match {
               case responseWrapper: SummaryResponseWrapper =>
-                responseWrapper.getSharingRulesSummary.foreach { ruleSummary =>
-                  val module = ruleSummary.getModule.get
+                responseWrapper.getSharingRulesSummary().foreach { ruleSummary =>
+                  val module = ruleSummary.getModule().get
                   if (module != null) {
-                    println(s"RulesSummary Module APIName: ${module.getAPIName}")
-                    println(s"RulesSummary Module Id: ${module.getId}")
+                    println(s"RulesSummary Module APIName: ${module.getAPIName()}")
+                    println(s"RulesSummary Module Id: ${module.getId()}")
                   }
-                  println(s"RulesSummary RuleComputationStatus: ${ruleSummary.getRuleComputationStatus}")
-                  println(s"RulesSummary RuleCount: ${ruleSummary.getRuleCount}")
+                  println(s"RulesSummary RuleComputationStatus: ${ruleSummary.getRuleComputationStatus()}")
+                  println(s"RulesSummary RuleCount: ${ruleSummary.getRuleCount()}")
                 }
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
                 println("Details: ")
-                exception.getDetails.foreach { details =>
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage.getValue}")
+                println(s"Message: ${exception.getMessage().getValue}")
             }
           } else if (apiResponse.getStatusCode != 204) {
             val responseObject = apiResponse.getModel

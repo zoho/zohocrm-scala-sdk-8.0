@@ -5,12 +5,11 @@ import com.zoho.crm.api.Initializer
 import com.zoho.crm.api.getrelatedrecordscount.{APIException, ActionHandler, ActionResponse, ActionWrapper, BodyWrapper, GetRelatedRecordCount, GetRelatedRecordsCountOperations, RelatedList, SuccessResponse}
 import com.zoho.crm.api.dc.{DataCenter, USDataCenter}
 import scala.collection.mutable.ArrayBuffer
-import scala.jdk.CollectionConverters._
 
 object GetRelatedRecordsCount {
 
   @throws[Exception]
-  def getRelatedRecordsCount(recordId: Long, moduleAPIName: String): Unit = {
+  private def getRelatedRecordsCount(recordId: Long, moduleAPIName: String): Unit = {
     val getRelatedRecordsCountOperations = new GetRelatedRecordsCountOperations(recordId, moduleAPIName)
     val request = new BodyWrapper()
     val getRelatedRecordsCount = new ArrayBuffer[GetRelatedRecordCount]()
@@ -35,38 +34,38 @@ object GetRelatedRecordsCount {
 
             actionHandler match {
               case actionWrapper: ActionWrapper =>
-                val actionResponses = actionWrapper.getGetRelatedRecordsCount
+                val actionResponses = actionWrapper.getGetRelatedRecordsCount()
                 actionResponses.foreach {
                   case successResponse: SuccessResponse =>
-                    println(s"Count: ${successResponse.getCount}")
-                    val relatedList = successResponse.getRelatedList
+                    println(s"Count: ${successResponse.getCount()}")
+                    val relatedList = successResponse.getRelatedList()
                     if (relatedList != null) {
-                      println(s"RelatedList APIName: ${relatedList.get.getAPIName}")
-                      println(s"RelatedList Id: ${relatedList.get.getId}")
+                      println(s"RelatedList APIName: ${relatedList.get.getAPIName()}")
+                      println(s"RelatedList Id: ${relatedList.get.getId()}")
                     }
 
                   case exception: APIException =>
-                    println(s"Status: ${exception.getStatus.getValue}")
-                    println(s"Code: ${exception.getCode.getValue}")
+                    println(s"Status: ${exception.getStatus().getValue}")
+                    println(s"Code: ${exception.getCode().getValue}")
                     println("Details: ")
-                    exception.getDetails.foreach { details =>
+                    exception.getDetails().foreach { details =>
                       details.foreach { case (key, value) =>
                         println(s"$key: $value")
                       }
                     }
-                    println(s"Message: ${exception.getMessage}")
+                    println(s"Message: ${exception.getMessage()}")
                 }
 
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
                 println("Details: ")
-                exception.getDetails.foreach { details =>
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage}")
+                println(s"Message: ${exception.getMessage()}")
 
               case _ => println("Unexpected response type.")
             }

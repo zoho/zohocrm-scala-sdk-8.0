@@ -7,7 +7,7 @@ import com.zoho.crm.api.dc.INDataCenter
 import com.zoho.crm.api.recordshareemail.{APIException, ActionWrapper, RecordShareEmailOperations, SuccessResponse}
 
 object UnshareEmails {
-  def unshareEmails(moduleAPIName: String, id: Long): Unit = {
+  private def unshareEmails(moduleAPIName: String, id: Long): Unit = {
     val recordShareEmailOperations = new RecordShareEmailOperations(moduleAPIName)
     val response = recordShareEmailOperations.unshareEmails(id)
     if (response != null) {
@@ -18,30 +18,30 @@ object UnshareEmails {
           if (apiResponse.isExpected) {
             apiResponse.getObject match {
               case actionWrapper: ActionWrapper =>
-                val actionResponses = actionWrapper.getData
+                val actionResponses = actionWrapper.getData()
                 for (actionResponse <- actionResponses) {
                   actionResponse match {
                     case successResponse: SuccessResponse =>
-                      println(s"Status: ${successResponse.getStatus.getValue}")
-                      println(s"Code: ${successResponse.getCode.getValue}")
+                      println(s"Status: ${successResponse.getStatus().getValue}")
+                      println(s"Code: ${successResponse.getCode().getValue}")
                       println("Details: ")
-                      successResponse.getDetails.foreach { details =>
+                      successResponse.getDetails().foreach { details =>
                         details.foreach { case (key, value) =>
                           println(s"$key: $value")
                         }
                       }
-                      println(s"Message: ${successResponse.getMessage.getValue}")
+                      println(s"Message: ${successResponse.getMessage().getValue}")
 
                     case exception: APIException =>
-                      println(s"Status: ${exception.getStatus.getValue}")
-                      println(s"Code: ${exception.getCode.getValue}")
+                      println(s"Status: ${exception.getStatus().getValue}")
+                      println(s"Code: ${exception.getCode().getValue}")
                       println("Details: ")
-                      exception.getDetails.foreach { details =>
+                      exception.getDetails().foreach { details =>
                         details.foreach { case (key, value) =>
                           println(s"$key: $value")
                         }
                       }
-                      println(s"Message: ${exception.getMessage.getValue}")
+                      println(s"Message: ${exception.getMessage().getValue}")
 
                     case _ =>
                       println("Unexpected ActionResponse type")
@@ -49,15 +49,15 @@ object UnshareEmails {
                 }
 
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
                 println("Details: ")
-                exception.getDetails.foreach { details =>
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage.getValue}")
+                println(s"Message: ${exception.getMessage().getValue}")
 
               case _ =>
                 println("Unexpected ActionHandler type")
@@ -76,7 +76,7 @@ object UnshareEmails {
   @throws[Exception]
   def main(args: Array[String]): Unit = {
     try {
-      val environment: Environment = USDataCenter.PRODUCTION
+      val environment: Environment = INDataCenter.PRODUCTION
       val token: Token = new OAuthToken.Builder()
         .clientID("client_id")
         .clientSecret("client_secret")

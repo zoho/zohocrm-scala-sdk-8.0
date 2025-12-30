@@ -25,37 +25,37 @@ object GetPickListValues {
           if (apiResponse.isExpected) {
             apiResponse.getObject match {
               case responseWrapper: ResponseWrapper =>
-                val pickListValues = responseWrapper.getPickListValues
+                val pickListValues = responseWrapper.getPickListValues()
                 if (pickListValues != null){
                   pickListValues.foreach { pickListValue =>
-                    println(s"PickListValues SequenceNumber: ${pickListValue.getSequenceNumber}")
-                    println(s"PickListValues DisplayValue: ${pickListValue.getDisplayValue}")
-                    println(s"PickListValues ReferenceValue: ${pickListValue.getReferenceValue}")
-                    println(s"PickListValues ColourCode: ${pickListValue.getColourCode}")
-                    println(s"PickListValues ActualValue: ${pickListValue.getActualValue}")
-                    println(s"PickListValues Id: ${pickListValue.getId}")
-                    println(s"PickListValues Type: ${pickListValue.getType}")
+                    println(s"PickListValues SequenceNumber: ${pickListValue.getSequenceNumber()}")
+                    println(s"PickListValues DisplayValue: ${pickListValue.getDisplayValue()}")
+                    println(s"PickListValues ReferenceValue: ${pickListValue.getReferenceValue()}")
+                    println(s"PickListValues ColourCode: ${pickListValue.getColourCode()}")
+                    println(s"PickListValues ActualValue: ${pickListValue.getActualValue()}")
+                    println(s"PickListValues Id: ${pickListValue.getId()}")
+                    println(s"PickListValues Type: ${pickListValue.getType()}")
 
-                    val layoutAssociations = pickListValue.getLayoutAssociations
+                    val layoutAssociations = pickListValue.getLayoutAssociations()
                     if (layoutAssociations != null) {
                       layoutAssociations.foreach { layoutAssociation =>
-                        println(s"PickListValues LayoutAssociation Id: ${layoutAssociation.getId}")
-                        println(s"PickListValues LayoutAssociation Name: ${layoutAssociation.getName}")
-                        println(s"PickListValues LayoutAssociation APIName: ${layoutAssociation.getAPIName}")
+                        println(s"PickListValues LayoutAssociation Id: ${layoutAssociation.getId()}")
+                        println(s"PickListValues LayoutAssociation Name: ${layoutAssociation.getName()}")
+                        println(s"PickListValues LayoutAssociation APIName: ${layoutAssociation.getAPIName()}")
                       }
                     }
                   }
                 }
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
                 println("Details: ")
-                exception.getDetails.foreach { details =>
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage}")
+                println(s"Message: ${exception.getMessage()}")
             }
           } else if (apiResponse.getStatusCode != 204) {
             val responseObject: Any = apiResponse.getModel

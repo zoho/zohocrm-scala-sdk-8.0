@@ -4,7 +4,7 @@ import com.zoho.api.authenticator.{OAuthToken, Token}
 import com.zoho.crm.api.{Initializer, ParameterMap}
 import com.zoho.crm.api.record.{APIException, RecordOperations, ResponseHandler, ResponseWrapper}
 import com.zoho.crm.api.record.RecordOperations.GetRichTextRecordsParam
-import com.zoho.crm.api.dc.{DataCenter, USDataCenter}
+import com.zoho.crm.api.dc.{DataCenter, INDataCenter}
 import com.zoho.crm.api.util.APIResponse
 
 import scala.jdk.CollectionConverters._
@@ -12,10 +12,11 @@ import scala.jdk.CollectionConverters._
 object GetRichTextRecords {
 
   @throws[Exception]
-  def getRichTextRecords(moduleAPIName: String): Unit = {
+  private def getRichTextRecords(moduleAPIName: String): Unit = {
     val recordOperations = new RecordOperations(moduleAPIName)
     val paramInstance = new ParameterMap()
-    paramInstance.add(new GetRichTextRecordsParam().ids, "3477062")
+//    paramInstance.add(new GetRichTextRecordsParam().ids, "1055806000028754072")
+    paramInstance.add(new GetRichTextRecordsParam().fields, "id")
     val response = recordOperations.getRichTextRecords(Option(paramInstance))
     if (response != null) {
       response match {
@@ -32,21 +33,21 @@ object GetRichTextRecords {
               case responseWrapper: ResponseWrapper =>
                 val records = responseWrapper.getData()
                 records.foreach { record =>
-                  println(s"Record ID: ${record.getId}")
-                  val createdBy = record.getCreatedBy().get
-                  if (createdBy != null) {
-                    println(s"Record Created By User-ID: ${createdBy.getId}")
-                    println(s"Record Created By User-Name: ${createdBy.getName}")
-                    println(s"Record Created By User-Email: ${createdBy.getEmail}")
+                  println(s"Record ID: ${record.getId()}")
+                  if (record.getCreatedBy() != null) {
+                    val createdBy = record.getCreatedBy().get
+                    println(s"Record Created By User-ID: ${createdBy.getId()}")
+                    println(s"Record Created By User-Name: ${createdBy.getName()}")
+                    println(s"Record Created By User-Email: ${createdBy.getEmail()}")
                   }
-                  println(s"Record CreatedTime: ${record.getCreatedTime}")
-                  val modifiedBy = record.getModifiedBy.get
-                  if (modifiedBy != null) {
-                    println(s"Record Modified By User-ID: ${modifiedBy.getId}")
-                    println(s"Record Modified By User-Name: ${modifiedBy.getName}")
-                    println(s"Record Modified By User-Email: ${modifiedBy.getEmail}")
+                  println(s"Record CreatedTime: ${record.getCreatedTime()}")
+                  if (record.getModifiedBy() != null) {
+                    val modifiedBy = record.getModifiedBy().get
+                    println(s"Record Modified By User-ID: ${modifiedBy.getId()}")
+                    println(s"Record Modified By User-Name: ${modifiedBy.getName()}")
+                    println(s"Record Modified By User-Email: ${modifiedBy.getEmail()}")
                   }
-                  println(s"Record ModifiedTime: ${record.getModifiedTime}")
+                  println(s"Record ModifiedTime: ${record.getModifiedTime()}")
                   println(s"Record Field Value: ${record.getKeyValue("Last_Name")}")
                   println("Record KeyValues: ")
                   record.getKeyValues().foreach { case (keyName, value) =>
@@ -73,26 +74,16 @@ object GetRichTextRecords {
                   }
                 }
 
-                val info = responseWrapper.getInfo().get
-                if (info != null) {
-                  Option(info.getCount).foreach { count =>
-                    println(s"Record Info Count: $count")
-                  }
-                  Option(info.getMoreRecords).foreach { moreRecords =>
-                    println(s"Record Info MoreRecords: $moreRecords")
-                  }
-                }
-
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
                 println("Details: ")
-                exception.getDetails.foreach { details =>
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage.getValue}")
+                println(s"Message: ${exception.getMessage().getValue}")
 
               case _ => println("Unexpected response type.")
             }
@@ -114,7 +105,7 @@ object GetRichTextRecords {
   @throws[Exception]
   def main(args: Array[String]): Unit = {
     try {
-      val environment: DataCenter.Environment = USDataCenter.PRODUCTION
+      val environment: DataCenter.Environment = INDataCenter.PRODUCTION
       val token: Token = new OAuthToken.Builder()
         .clientID("client_id")
         .clientSecret("client_secret")

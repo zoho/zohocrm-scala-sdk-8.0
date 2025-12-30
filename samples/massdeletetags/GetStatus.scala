@@ -27,37 +27,37 @@ object GetStatus {
           if (apiResponse.isExpected) {
             apiResponse.getObject match {
               case statusResponseWrapper: StatusResponseWrapper =>
-                val statusActionResponses = statusResponseWrapper.getMassDelete
+                val statusActionResponses = statusResponseWrapper.getMassDelete()
                 statusActionResponses.foreach {
                   case massDeleteDetail: MassDeleteDetails =>
-                    println(s"Status JobId: ${massDeleteDetail.getJobId}")
-                    println(s"Status TotalCount: ${massDeleteDetail.getTotalCount}")
-                    println(s"Status FailedCount: ${massDeleteDetail.getFailedCount}")
-                    println(s"Status DeletedCount: ${massDeleteDetail.getDeletedCount}")
-                    println(s"Job Status: ${massDeleteDetail.getStatus.getValue}")
+                    println(s"Status JobId: ${massDeleteDetail.getJobId()}")
+                    println(s"Status TotalCount: ${massDeleteDetail.getTotalCount()}")
+                    println(s"Status FailedCount: ${massDeleteDetail.getFailedCount()}")
+                    println(s"Status DeletedCount: ${massDeleteDetail.getDeletedCount()}")
+                    println(s"Job Status: ${massDeleteDetail.getStatus().getValue}")
 
                   case apiException: APIException =>
-                    println(s"Status: ${apiException.getStatus.getValue}")
-                    println(s"Code: ${apiException.getCode.getValue}")
+                    println(s"Status: ${apiException.getStatus().getValue}")
+                    println(s"Code: ${apiException.getCode().getValue}")
                     println("Details: ")
-                    apiException.getDetails.foreach { details =>
+                    apiException.getDetails().foreach { details =>
                       details.foreach { case (key, value) =>
                         println(s"$key: $value")
                       }
                     }
-                    println(s"Message: ${apiException.getMessage}")
+                    println(s"Message: ${apiException.getMessage()}")
                 }
 
               case apiException: APIException =>
-                println(s"Status: ${apiException.getStatus.getValue}")
-                println(s"Code: ${apiException.getCode.getValue}")
+                println(s"Status: ${apiException.getStatus().getValue}")
+                println(s"Code: ${apiException.getCode().getValue}")
                 println("Details: ")
-                apiException.getDetails.foreach { details =>
+                apiException.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${apiException.getMessage}")
+                println(s"Message: ${apiException.getMessage()}")
 
               case _ =>
                 val responseObject: Any = apiResponse.getModel

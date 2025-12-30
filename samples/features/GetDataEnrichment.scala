@@ -26,76 +26,76 @@ object GetDataEnrichment {
             if (apiResponse.isExpected) {
               apiResponse.getObject match {
                 case responseWrapper: ResponseWrapper =>
-                  val features = responseWrapper.getFeatures
+                  val features = responseWrapper.getFeatures()
                   if (features != null) {
                     features.foreach { feature =>
-                      val components = feature.getComponents
+                      val components = feature.getComponents()
                       if (components != null) {
                         components.foreach { component =>
-                          println(s"Feature Component APIName : ${component.getAPIName}")
-                          println(s"Feature Component ModuleSupported : ${component.getModuleSupported}")
+                          println(s"Feature Component APIName : ${component.getAPIName()}")
+                          println(s"Feature Component ModuleSupported : ${component.getModuleSupported()}")
 
-                          Option(component.getDetails).foreach { detail =>
+                          Option(component.getDetails()).foreach { detail =>
                             detail match {
                               case Some(detail_1)=>
-                                Option(detail_1.getLimits).foreach {
+                                Option(detail_1.getLimits()).foreach {
                                   case Some(limit1) =>
-                                    println(s"Feature Component Detail Limit EditionLimit: ${limit1.getEditionLimit}")
-                                    println(s"Feature Component Detail Limit Total: ${limit1.getTotal}")
+                                    println(s"Feature Component Detail Limit EditionLimit: ${limit1.getEditionLimit()}")
+                                    println(s"Feature Component Detail Limit Total: ${limit1.getTotal()}")
                                 }
-                                Option(detail_1.getUsedCount).foreach {
+                                Option(detail_1.getUsedCount()).foreach {
                                   case Some(usedCount)=>
-                                    println(s"Feature Component Detail UsedCount EditionLimit: ${usedCount.getEditionLimit}")
-                                    println(s"Feature Component Detail UsedCount Total: ${usedCount.getTotal}")
+                                    println(s"Feature Component Detail UsedCount EditionLimit: ${usedCount.getEditionLimit()}")
+                                    println(s"Feature Component Detail UsedCount Total: ${usedCount.getTotal()}")
                                 }
                             }
-                            println(s"Feature Component FeatureLabel : ${component.getFeatureLabel}")
+                            println(s"Feature Component FeatureLabel : ${component.getFeatureLabel()}")
                           }
                         }
                       }
 
-                      println(s"Feature APIName : ${feature.getAPIName}")
+                      println(s"Feature APIName : ${feature.getAPIName()}")
                       val parentFeature = feature.getParentFeature()
-                      if (parentFeature != null && parentFeature != None){
+                      if (parentFeature != null && parentFeature.isDefined){
                         parentFeature match{
                           case Some(parentFeature_1) =>
-                            println(s"Feature ParentFeature APIName: ${parentFeature_1.getAPIName}")
+                            println(s"Feature ParentFeature APIName: ${parentFeature_1.getAPIName()}")
                         }
                       }
-                      println(s"Feature ModuleSupported : ${feature.getModuleSupported}")
+                      println(s"Feature ModuleSupported : ${feature.getModuleSupported()}")
 
-                      Option(feature.getDetails).foreach {
+                      Option(feature.getDetails()).foreach {
                         case Some(detail)=>
                           if (detail.getLimits().isDefined) {
-                            Option(detail.getLimits).foreach {
+                            Option(detail.getLimits()).foreach {
                               case Some(limit) =>
-                                println(s"Feature Detail Limit EditionLimit: ${limit.getEditionLimit}")
-                                println(s"Feature Detail Limit Total: ${limit.getTotal}")
+                                println(s"Feature Detail Limit EditionLimit: ${limit.getEditionLimit()}")
+                                println(s"Feature Detail Limit Total: ${limit.getTotal()}")
                             }
                           }
                           if (detail.getUsedCount().isDefined) {
-                            Option(detail.getUsedCount).foreach {
+                            Option(detail.getUsedCount()).foreach {
                               case Some(usedCount) =>
-                                println(s"Feature Component Detail UsedCount EditionLimit: ${usedCount.getEditionLimit}")
-                                println(s"Feature Component Detail UsedCount Total: ${usedCount.getTotal}")
+                                println(s"Feature Component Detail UsedCount EditionLimit: ${usedCount.getEditionLimit()}")
+                                println(s"Feature Component Detail UsedCount Total: ${usedCount.getTotal()}")
                             }
                           }
                       }
 
-                      println(s"Feature FeatureLabel : ${feature.getFeatureLabel}")
+                      println(s"Feature FeatureLabel : ${feature.getFeatureLabel()}")
                     }
                   }
 
                 case apiException: APIException =>
-                  println(s"Status: ${apiException.getStatus.getValue}")
-                  println(s"Code: ${apiException.getCode.getValue}")
+                  println(s"Status: ${apiException.getStatus().getValue}")
+                  println(s"Code: ${apiException.getCode().getValue}")
                   println("Details: ")
-                  apiException.getDetails.foreach { details =>
+                  apiException.getDetails().foreach { details =>
                     details.foreach { case (key, value) =>
                       println(s"$key: $value")
                     }
                   }
-                  println(s"Message: ${apiException.getMessage}")
+                  println(s"Message: ${apiException.getMessage()}")
 
                 case _ =>
                   val responseObject: Any = apiResponse.getModel

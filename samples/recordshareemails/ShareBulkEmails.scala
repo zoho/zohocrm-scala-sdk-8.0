@@ -9,7 +9,7 @@ import com.zoho.crm.api.recordshareemail.{APIException, ActionWrapper, BodyWrapp
 import scala.collection.mutable.ArrayBuffer
 
 object ShareBulkEmails {
-  def shareBulkEmails(moduleAPIName: String): Unit = {
+  private def shareBulkEmails(moduleAPIName: String): Unit = {
     val recordShareEmailOperations = new RecordShareEmailOperations(moduleAPIName)
     val request = new BodyWrapper()
     request.setIds(ArrayBuffer(34770623L, 34770020L))
@@ -22,45 +22,45 @@ object ShareBulkEmails {
           if (apiResponse.isExpected) {
             apiResponse.getObject match {
               case actionWrapper: ActionWrapper =>
-                val actionResponses = actionWrapper.getData
+                val actionResponses = actionWrapper.getData()
                 for (actionResponse <- actionResponses) {
                   actionResponse match {
                     case successResponse: SuccessResponse =>
-                      println(s"Status: ${successResponse.getStatus.getValue}")
-                      println(s"Code: ${successResponse.getCode.getValue}")
+                      println(s"Status: ${successResponse.getStatus().getValue}")
+                      println(s"Code: ${successResponse.getCode().getValue}")
                       println("Details: ")
-                      successResponse.getDetails.foreach { details =>
+                      successResponse.getDetails().foreach { details =>
                         details.foreach { case (key, value) =>
                           println(s"$key: $value")
                         }
                       }
-                      println(s"Message: ${successResponse.getMessage.getValue}")
+                      println(s"Message: ${successResponse.getMessage().getValue}")
 
                     case exception: APIException =>
-                      println(s"Status: ${exception.getStatus.getValue}")
-                      println(s"Code: ${exception.getCode.getValue}")
+                      println(s"Status: ${exception.getStatus().getValue}")
+                      println(s"Code: ${exception.getCode().getValue}")
                       println("Details: ")
-                      exception.getDetails.foreach { details =>
+                      exception.getDetails().foreach { details =>
                         details.foreach { case (key, value) =>
                           println(s"$key: $value")
                         }
                       }
-                      println(s"Message: ${exception.getMessage.getValue}")
+                      println(s"Message: ${exception.getMessage().getValue}")
 
                     case _ =>
                       println("Unexpected ActionResponse type")
                   }
                 }
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
                 println("Details: ")
-                exception.getDetails.foreach { details =>
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage.getValue}")
+                println(s"Message: ${exception.getMessage().getValue}")
               case _ =>
                 println("Unexpected ActionHandler type")
             }
@@ -79,7 +79,7 @@ object ShareBulkEmails {
   @throws[Exception]
   def main(args: Array[String]): Unit = {
     try {
-      val environment: Environment = USDataCenter.PRODUCTION
+      val environment: Environment = INDataCenter.PRODUCTION
       val token: Token = new OAuthToken.Builder()
         .clientID("client_id")
         .clientSecret("client_secret")

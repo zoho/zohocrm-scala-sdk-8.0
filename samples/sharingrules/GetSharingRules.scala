@@ -35,62 +35,62 @@ object GetSharingRules {
 
             responseHandler match {
               case responseWrapper: ResponseWrapper =>
-                val sharingRules = responseWrapper.getSharingRules
+                val sharingRules = responseWrapper.getSharingRules()
                 sharingRules.foreach { sharingRule =>
-                  val module = sharingRule.getModule.get
+                  val module = sharingRule.getModule().get
                   if (module != null) {
-                    println(s"SharingRules Module APIName: ${module.getAPIName}")
-                    println(s"SharingRules Module Name: ${module.getName}")
-                    println(s"SharingRules Module Id: ${module.getId}")
+                    println(s"SharingRules Module APIName: ${module.getAPIName()}")
+                    println(s"SharingRules Module Name: ${module.getName()}")
+                    println(s"SharingRules Module Id: ${module.getId()}")
                   }
-                  println(s"SharingRules SuperiorsAllowed: ${sharingRule.getSuperiorsAllowed}")
-                  println(s"SharingRules Type: ${sharingRule.getType.getValue}")
+                  println(s"SharingRules SuperiorsAllowed: ${sharingRule.getSuperiorsAllowed()}")
+                  println(s"SharingRules Type: ${sharingRule.getType().getValue}")
 
-                  val sharedTo = sharingRule.getSharedTo.get
+                  val sharedTo = sharingRule.getSharedTo().get
                   if (sharedTo != null) {
-                    val resource = sharedTo.getResource.get
+                    val resource = sharedTo.getResource().get
                     if (resource != null) {
-                      println(s"SharingRules SharedTo Resource Name: ${resource.getName}")
-                      println(s"SharingRules SharedTo Resource Id: ${resource.getId}")
+                      println(s"SharingRules SharedTo Resource Name: ${resource.getName()}")
+                      println(s"SharingRules SharedTo Resource Id: ${resource.getId()}")
                     }
-                    println(s"SharingRules SharedTo Type: ${sharedTo.getType}")
-                    println(s"SharingRules SharedTo Subordinates: ${sharedTo.getSubordinates}")
+                    println(s"SharingRules SharedTo Type: ${sharedTo.getType()}")
+                    println(s"SharingRules SharedTo Subordinates: ${sharedTo.getSubordinates()}")
                   }
 
-                  val sharedFrom = sharingRule.getSharedFrom.get
+                  val sharedFrom = sharingRule.getSharedFrom().get
                   if (sharedFrom != null) {
-                    val resource = sharedFrom.getResource.get
+                    val resource = sharedFrom.getResource().get
                     if (resource != null) {
-                      println(s"SharingRules SharedFrom Resource Name: ${resource.getName}")
-                      println(s"SharingRules SharedFrom Resource Id: ${resource.getId}")
+                      println(s"SharingRules SharedFrom Resource Name: ${resource.getName()}")
+                      println(s"SharingRules SharedFrom Resource Id: ${resource.getId()}")
                     }
-                    println(s"SharingRules SharedFrom Type: ${sharedFrom.getType}")
-                    println(s"SharingRules SharedFrom Subordinates: ${sharedFrom.getSubordinates}")
+                    println(s"SharingRules SharedFrom Type: ${sharedFrom.getType()}")
+                    println(s"SharingRules SharedFrom Subordinates: ${sharedFrom.getSubordinates()}")
                   }
 
-                  println(s"SharingRules PermissionType: ${sharingRule.getPermissionType.getValue}")
-                  println(s"SharingRules Name: ${sharingRule.getName}")
-                  println(s"SharingRules Id: ${sharingRule.getId}")
-                  println(s"SharingRules Status: ${sharingRule.getStatus.getValue}")
-                  println(s"SharingRules MatchLimitExceeded: ${sharingRule.getMatchLimitExceeded}")
+                  println(s"SharingRules PermissionType: ${sharingRule.getPermissionType().getValue}")
+                  println(s"SharingRules Name: ${sharingRule.getName()}")
+                  println(s"SharingRules Id: ${sharingRule.getId()}")
+                  println(s"SharingRules Status: ${sharingRule.getStatus().getValue}")
+                  println(s"SharingRules MatchLimitExceeded: ${sharingRule.getMatchLimitExceeded()}")
                 }
 
-                val info = responseWrapper.getInfo.get
-                println(s"SharingRules Info PerPage: ${info.getPerPage}")
-                println(s"SharingRules Info Count: ${info.getCount}")
-                println(s"SharingRules Info Page: ${info.getPage}")
-                println(s"SharingRules Info MoreRecords: ${info.getMoreRecords}")
+                val info = responseWrapper.getInfo().get
+                println(s"SharingRules Info PerPage: ${info.getPerPage()}")
+                println(s"SharingRules Info Count: ${info.getCount()}")
+                println(s"SharingRules Info Page: ${info.getPage()}")
+                println(s"SharingRules Info MoreRecords: ${info.getMoreRecords()}")
 
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
                 println("Details: ")
-                exception.getDetails.foreach { details =>
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage.getValue}")
+                println(s"Message: ${exception.getMessage().getValue}")
 
               case _ => println("Unexpected response type.")
             }

@@ -119,26 +119,26 @@ object SearchSharingRulesSummary {
             val responseHandler = apiResponse.getObject
             responseHandler match {
               case responseWrapper: SummaryResponseWrapper =>
-                val rulesSummary = responseWrapper.getSharingRulesSummary
+                val rulesSummary = responseWrapper.getSharingRulesSummary()
                 rulesSummary.foreach { ruleSummary =>
-                  val module = ruleSummary.getModule.get
+                  val module = ruleSummary.getModule().get
                   if (module != null) {
-                    println(s"RulesSummary Module APIName: ${module.getAPIName}")
-                    println(s"RulesSummary Module Id: ${module.getId}")
+                    println(s"RulesSummary Module APIName: ${module.getAPIName()}")
+                    println(s"RulesSummary Module Id: ${module.getId()}")
                   }
-                  println(s"RulesSummary RuleComputationStatus: ${ruleSummary.getRuleComputationStatus}")
-                  println(s"RulesSummary RuleCount: ${ruleSummary.getRuleCount}")
+                  println(s"RulesSummary RuleComputationStatus: ${ruleSummary.getRuleComputationStatus()}")
+                  println(s"RulesSummary RuleCount: ${ruleSummary.getRuleCount()}")
                 }
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
                 println("Details:")
-                exception.getDetails.foreach { details =>
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage}")
+                println(s"Message: ${exception.getMessage()}")
             }
           } else if (apiResponse.getStatusCode != 204) {
             val responseObject = apiResponse.getModel

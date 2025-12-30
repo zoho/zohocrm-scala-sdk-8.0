@@ -10,7 +10,7 @@ import com.zoho.crm.api.util.{APIResponse, Model}
 object GetZiaPeopleEnrichments {
 
   @throws[Exception]
-  def getZiaPeopleEnrichments(): Unit = {
+  private def getZiaPeopleEnrichments(): Unit = {
     val ziaPeopleEnrichmentOperations = new ZiaPeopleEnrichmentOperations()
     val paramInstance = new ParameterMap()
     val response: Option[APIResponse[ResponseHandler]] = ziaPeopleEnrichmentOperations.getZiaPeopleEnrichments(Option(paramInstance))
@@ -28,46 +28,46 @@ object GetZiaPeopleEnrichments {
           if (apiResponse.isExpected) {
             apiResponse.getObject match {
               case responseWrapper: ResponseWrapper =>
-                val ziaPeopleEnrichments = responseWrapper.getZiaPeopleEnrichment
+                val ziaPeopleEnrichments = responseWrapper.getZiaPeopleEnrichment()
                 if (ziaPeopleEnrichments != null) {
                   ziaPeopleEnrichments.foreach { ziaPeopleEnrichment =>
-                    println(s"ZiaPeopleEnrichment CreatedTime: ${ziaPeopleEnrichment.getCreatedTime}")
-                    println(s"ZiaPeopleEnrichment Id: ${ziaPeopleEnrichment.getId}")
+                    println(s"ZiaPeopleEnrichment CreatedTime: ${ziaPeopleEnrichment.getCreatedTime()}")
+                    println(s"ZiaPeopleEnrichment Id: ${ziaPeopleEnrichment.getId()}")
 
-                    val user = ziaPeopleEnrichment.getCreatedBy
+                    val user = ziaPeopleEnrichment.getCreatedBy()
                     if (user != null) {
                       user match{
                         case Some(user_1)=>
-                          println(s"ZiaPeopleEnrichment User Id: ${user_1.getId}")
-                          println(s"ZiaPeopleEnrichment User Name: ${user_1.getName}")
+                          println(s"ZiaPeopleEnrichment User Id: ${user_1.getId()}")
+                          println(s"ZiaPeopleEnrichment User Name: ${user_1.getName()}")
                       }
                     }
 
-                    println(s"ZiaPeopleEnrichment Status: ${ziaPeopleEnrichment.getStatus}")
+                    println(s"ZiaPeopleEnrichment Status: ${ziaPeopleEnrichment.getStatus()}")
                   }
                 }
 
-                val info = responseWrapper.getInfo
+                val info = responseWrapper.getInfo()
                 if (info != null) {
                   info match {
                     case Some(info_1) =>
-                      Option(info_1.getPerPage).foreach(perPage => println(s"ZiaPeopleEnrichment Info PerPage: $perPage"))
-                      Option(info_1.getCount).foreach(count => println(s"ZiaPeopleEnrichment Info Count: $count"))
-                      Option(info_1.getPage).foreach(page => println(s"ZiaPeopleEnrichment Info Page: $page"))
-                      Option(info_1.getMoreRecords).foreach(moreRecords => println(s"ZiaPeopleEnrichment Info MoreRecords: $moreRecords"))
+                      Option(info_1.getPerPage()).foreach(perPage => println(s"ZiaPeopleEnrichment Info PerPage: $perPage"))
+                      Option(info_1.getCount()).foreach(count => println(s"ZiaPeopleEnrichment Info Count: $count"))
+                      Option(info_1.getPage()).foreach(page => println(s"ZiaPeopleEnrichment Info Page: $page"))
+                      Option(info_1.getMoreRecords()).foreach(moreRecords => println(s"ZiaPeopleEnrichment Info MoreRecords: $moreRecords"))
                   }
                 }
 
               case apiException: APIException =>
-                println(s"Status: ${apiException.getStatus.getValue}")
-                println(s"Code: ${apiException.getCode.getValue}")
+                println(s"Status: ${apiException.getStatus().getValue}")
+                println(s"Code: ${apiException.getCode().getValue}")
                 println("Details: ")
-                apiException.getDetails.foreach { details =>
+                apiException.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${apiException.getMessage}")
+                println(s"Message: ${apiException.getMessage()}")
 
               case _ =>
                 val responseObject: Any = apiResponse.getModel

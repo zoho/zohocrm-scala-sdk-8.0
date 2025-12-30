@@ -8,7 +8,7 @@ import com.zoho.crm.api.dc.{INDataCenter, USDataCenter}
 
 object UpdateCallPreference {
 
-  def updateCallPreference(): Unit = {
+  private def updateCallPreference(): Unit = {
     val callPreferencesOperations = new CallPreferencesOperations()
     val bodyWrapper = new BodyWrapper()
     val callPreferences = new CallPreferences()
@@ -27,29 +27,29 @@ object UpdateCallPreference {
           if (apiResponse.isExpected) {
             apiResponse.getObject match {
               case actionWrapper: ActionWrapper =>
-                val actionResponse = actionWrapper.getCallPreferences
+                val actionResponse = actionWrapper.getCallPreferences()
                 actionResponse match {
                   case Some(actionResponse1) =>
                     actionResponse1 match {
                       case successResponse: SuccessResponse =>
-                        println(s"Status: ${successResponse.getStatus.getValue}")
-                        println(s"Code: ${successResponse.getCode.getValue}")
-                        successResponse.getDetails.foreach { details =>
+                        println(s"Status: ${successResponse.getStatus().getValue}")
+                        println(s"Code: ${successResponse.getCode().getValue}")
+                        successResponse.getDetails().foreach { details =>
                           details.foreach { case (key, value) =>
                             println(s"$key: $value")
                           }
                         }
-                        println(s"Message: ${successResponse.getMessage}")
+                        println(s"Message: ${successResponse.getMessage()}")
 
                       case exception: APIException =>
-                        println(s"Status: ${exception.getStatus.getValue}")
-                        println(s"Code: ${exception.getCode.getValue}")
-                        exception.getDetails.foreach { details =>
+                        println(s"Status: ${exception.getStatus().getValue}")
+                        println(s"Code: ${exception.getCode().getValue}")
+                        exception.getDetails().foreach { details =>
                           details.foreach { case (key, value) =>
                             println(s"$key: $value")
                           }
                         }
-                        println(s"Message: ${exception.getMessage}")
+                        println(s"Message: ${exception.getMessage()}")
 
                       case _ =>
                         println("Unexpected ActionResponse type")
@@ -57,14 +57,14 @@ object UpdateCallPreference {
                 }
 
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
-                exception.getDetails.foreach { details =>
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage}")
+                println(s"Message: ${exception.getMessage()}")
 
               case _ =>
                 println("Unexpected ActionHandler type")

@@ -1,16 +1,10 @@
 package samples.sharingrules
 
-import java.lang.reflect.Field
-import java.util.{ArrayList, Arrays, List, Map}
 import com.zoho.api.authenticator.OAuthToken
-import com.zoho.api.authenticator.Token
-import com.zoho.crm.api.Initializer
-import com.zoho.crm.api.ParameterMap
+import com.zoho.crm.api.{Initializer, ParameterMap}
 import com.zoho.crm.api.dc.USDataCenter
-import com.zoho.crm.api.dc.DataCenter.Environment
 import com.zoho.crm.api.sharingrules.SharingRulesOperations.GetSharingRulesParam
 import com.zoho.crm.api.sharingrules._
-import com.zoho.crm.api.util.{APIResponse, Model}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -125,52 +119,52 @@ object SearchSharingRules {
               case responseWrapper: ResponseWrapper =>
                 val sharingRules = responseWrapper.getSharingRules()
                 sharingRules.foreach { sharingRule =>
-                  Option(sharingRule.getModule.get).foreach { module =>
-                    println(s"SharingRules Module APIName: ${module.getAPIName}")
-                    println(s"SharingRules Module Name: ${module.getName}")
-                    println(s"SharingRules Module Id: ${module.getId}")
+                  Option(sharingRule.getModule().get).foreach { module =>
+                    println(s"SharingRules Module APIName: ${module.getAPIName()}")
+                    println(s"SharingRules Module Name: ${module.getName()}")
+                    println(s"SharingRules Module Id: ${module.getId()}")
                   }
-                  println(s"SharingRules SuperiorsAllowed: ${sharingRule.getSuperiorsAllowed}")
-                  println(s"SharingRules Type: ${sharingRule.getType.getValue}")
-                  Option(sharingRule.getSharedTo.get).foreach { sharedTo =>
-                    Option(sharedTo.getResource.get).foreach { resource =>
-                      println(s"SharingRules SharedTo Resource Name: ${resource.getName}")
-                      println(s"SharingRules SharedTo Resource Id: ${resource.getId}")
+                  println(s"SharingRules SuperiorsAllowed: ${sharingRule.getSuperiorsAllowed()}")
+                  println(s"SharingRules Type: ${sharingRule.getType().getValue}")
+                  Option(sharingRule.getSharedTo().get).foreach { sharedTo =>
+                    Option(sharedTo.getResource().get).foreach { resource =>
+                      println(s"SharingRules SharedTo Resource Name: ${resource.getName()}")
+                      println(s"SharingRules SharedTo Resource Id: ${resource.getId()}")
                     }
-                    println(s"SharingRules SharedTo Type: ${sharedTo.getType}")
-                    println(s"SharingRules SharedTo Subordinates: ${sharedTo.getSubordinates}")
+                    println(s"SharingRules SharedTo Type: ${sharedTo.getType()}")
+                    println(s"SharingRules SharedTo Subordinates: ${sharedTo.getSubordinates()}")
                   }
-                  Option(sharingRule.getSharedFrom.get).foreach { sharedFrom =>
-                    Option(sharedFrom.getResource.get).foreach { resource =>
-                      println(s"SharingRules SharedFrom Resource Name: ${resource.getName}")
-                      println(s"SharingRules SharedFrom Resource Id: ${resource.getId}")
+                  Option(sharingRule.getSharedFrom().get).foreach { sharedFrom =>
+                    Option(sharedFrom.getResource().get).foreach { resource =>
+                      println(s"SharingRules SharedFrom Resource Name: ${resource.getName()}")
+                      println(s"SharingRules SharedFrom Resource Id: ${resource.getId()}")
                     }
-                    println(s"SharingRules SharedFrom Type: ${sharedFrom.getType}")
-                    println(s"SharingRules SharedFrom Subordinates: ${sharedFrom.getSubordinates}")
+                    println(s"SharingRules SharedFrom Type: ${sharedFrom.getType()}")
+                    println(s"SharingRules SharedFrom Subordinates: ${sharedFrom.getSubordinates()}")
                   }
-                  println(s"SharingRules PermissionType: ${sharingRule.getPermissionType.getValue}")
-                  println(s"SharingRules Name: ${sharingRule.getName}")
-                  println(s"SharingRules Id: ${sharingRule.getId}")
-                  println(s"SharingRules Status: ${sharingRule.getStatus.getValue}")
-                  println(s"SharingRules MatchLimitExceeded: ${sharingRule.getMatchLimitExceeded}")
+                  println(s"SharingRules PermissionType: ${sharingRule.getPermissionType().getValue}")
+                  println(s"SharingRules Name: ${sharingRule.getName()}")
+                  println(s"SharingRules Id: ${sharingRule.getId()}")
+                  println(s"SharingRules Status: ${sharingRule.getStatus().getValue}")
+                  println(s"SharingRules MatchLimitExceeded: ${sharingRule.getMatchLimitExceeded()}")
                 }
 
-                val info = responseWrapper.getInfo.get
-                println(s"SharingRules Info PerPage: ${info.getPerPage}")
-                println(s"SharingRules Info Count: ${info.getCount}")
-                println(s"SharingRules Info Page: ${info.getPage}")
-                println(s"SharingRules Info MoreRecords: ${info.getMoreRecords}")
+                val info = responseWrapper.getInfo().get
+                println(s"SharingRules Info PerPage: ${info.getPerPage()}")
+                println(s"SharingRules Info Count: ${info.getCount()}")
+                println(s"SharingRules Info Page: ${info.getPage()}")
+                println(s"SharingRules Info MoreRecords: ${info.getMoreRecords()}")
 
               case exception: APIException =>
-                println(s"Status: ${exception.getStatus.getValue}")
-                println(s"Code: ${exception.getCode.getValue}")
+                println(s"Status: ${exception.getStatus().getValue}")
+                println(s"Code: ${exception.getCode().getValue}")
                 println("Details: ")
-                exception.getDetails.foreach { details =>
+                exception.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${exception.getMessage.getValue}")
+                println(s"Message: ${exception.getMessage().getValue}")
             }
           } else if (apiResponse.getStatusCode != 204) {
             val responseObject = apiResponse.getModel

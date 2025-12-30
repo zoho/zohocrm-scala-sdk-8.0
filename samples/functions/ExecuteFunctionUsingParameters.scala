@@ -39,25 +39,25 @@ object ExecuteFunctionUsingParameters {
         if (apiResponse.isExpected) {
           apiResponse.getObject match {
             case successResponse: SuccessResponse =>
-              println(s"Code: ${successResponse.getCode.getValue}")
+              println(s"Code: ${successResponse.getCode().getValue}")
               println("Details: ")
               successResponse.getDetails().foreach { details =>
                 details.foreach { case (key, value) =>
                   println(s"$key: $value")
                 }
               }
-              println(s"Message: ${successResponse.getMessage.getValue}")
+              println(s"Message: ${successResponse.getMessage().getValue}")
 
             case exception: APIException =>
-              println(s"Status: ${exception.getStatus.getValue}")
-              println(s"Code: ${exception.getCode.getValue}")
+              println(s"Status: ${exception.getStatus().getValue}")
+              println(s"Code: ${exception.getCode().getValue}")
               println("Details: ")
               exception.getDetails().foreach { details =>
                 details.foreach { case (key, value) =>
                   println(s"$key: $value")
                 }
               }
-              println(s"Message: ${exception.getMessage.getValue}")
+              println(s"Message: ${exception.getMessage().getValue}")
 
           }
         } else {

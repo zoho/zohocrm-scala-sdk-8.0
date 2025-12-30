@@ -16,7 +16,7 @@ import scala.collection.mutable.ArrayBuffer
 object CreateZiaOrgEnrichment {
 
   @throws[Exception]
-  def createZiaOrgEnrichment(): Unit = {
+  private def createZiaOrgEnrichment(): Unit = {
     val ziaOrgEnrichmentOperations = new ZiaOrgEnrichmentOperations()
     val request = new BodyWrapper()
 
@@ -43,40 +43,40 @@ object CreateZiaOrgEnrichment {
           if (apiResponse.isExpected) {
             apiResponse.getObject match {
               case actionWrapper: ActionWrapper =>
-                actionWrapper.getZiaOrgEnrichment.foreach {
+                actionWrapper.getZiaOrgEnrichment().foreach {
                   case successResponse: SuccessResponse =>
-                    println(s"Status: ${successResponse.getStatus.getValue}")
-                    println(s"Code: ${successResponse.getCode.getValue}")
+                    println(s"Status: ${successResponse.getStatus().getValue}")
+                    println(s"Code: ${successResponse.getCode().getValue}")
                     println("Details: ")
-                    successResponse.getDetails.foreach { details =>
+                    successResponse.getDetails().foreach { details =>
                       details.foreach { case (key, value) =>
                         println(s"$key: $value")
                       }
                     }
-                    println(s"Message: ${successResponse.getMessage}")
+                    println(s"Message: ${successResponse.getMessage()}")
 
                   case apiException: APIException =>
-                    println(s"Status: ${apiException.getStatus.getValue}")
-                    println(s"Code: ${apiException.getCode.getValue}")
+                    println(s"Status: ${apiException.getStatus().getValue}")
+                    println(s"Code: ${apiException.getCode().getValue}")
                     println("Details: ")
-                    apiException.getDetails.foreach { details =>
+                    apiException.getDetails().foreach { details =>
                       details.foreach { case (key, value) =>
                         println(s"$key: $value")
                       }
                     }
-                    println(s"Message: ${apiException.getMessage.getValue}")
+                    println(s"Message: ${apiException.getMessage().getValue}")
                 }
 
               case apiException: APIException =>
-                println(s"Status: ${apiException.getStatus.getValue}")
-                println(s"Code: ${apiException.getCode.getValue}")
+                println(s"Status: ${apiException.getStatus().getValue}")
+                println(s"Code: ${apiException.getCode().getValue}")
                 println("Details: ")
-                apiException.getDetails.foreach { details =>
+                apiException.getDetails().foreach { details =>
                   details.foreach { case (key, value) =>
                     println(s"$key: $value")
                   }
                 }
-                println(s"Message: ${apiException.getMessage.getValue}")
+                println(s"Message: ${apiException.getMessage().getValue}")
             }
           } else {
             val responseObject = apiResponse.getModel
