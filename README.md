@@ -24,6 +24,41 @@ License
     limitations under the License.
 
 ## Latest Version
+- [3.0.0](/versions/3.0.0/README.md)
+
+    - Updated the SDK to support Scala 3.2.2 version.
+    - Updated sbt-sonatype plugin to version 3.12.2 for publishing the SDK to Sonatype repository.
+    - Updated sbt-pgp plugin to version 2.3.1 for signing the SDK artifacts.
+    - Updated sbt-release plugin to version 1.0.15 for automating the release process of the SDK.
+    - Minor bug fixes and performance improvements.
+    - Updated dependencies to their latest versions.
+    - Improved error handling and logging mechanisms.
+    - Handled SDK utils and API connectors.
+    - Improved DB store query handling.
+    - Fixed an issue with the Blueprint update API response.
+    - Blueprint Field class `validationRule` field datatype changed (String to Object).
+    - BulkWrite `BodyWrapper` class `fileType` field datatype changed (Choice to String).
+    - BulkWrite `JobDetail` class `fileType` field datatype changed (Choice to String).
+    - BulkRead `Query` class `fileType` field datatype changed (Choice to String).
+    - Modules `GetModulesParam` class `STATUS` field datatype changed (Choice to String).
+    - Added new `trigger` field in Notes `BodyWrapper` class.
+    - Notifications class `deleteEvents` field datatype changed (Choice to String).
+    - Modules `DeleteNotificationParam` class `CHANNEL_IDS` field datatype changed (Long to String).
+    - Profiles and `MinifiedProfile` class `delete` field datatype changed (Boolean to `Delete` class).
+    - Added new `applyFeatureExecution`, `applyValidationRule`, `applyFunctionValidationRule`, and `skipFeatureExecution` fields in Record `BodyWrapper` class.
+    - Tags class `colorCode` field datatype changed (Choice to String).
+    - Users `CountWrapper` class `count` field datatype changed (Long to Integer).
+    - Users `GetUsersParam` class `TYPE` field datatype changed (Choice to String).
+    - Webforms `Abtesting` class `id` field datatype changed (Long to String).
+    - Webforms `AcknowledgeVisitor` class `templateId` field datatype changed (Long to String).
+    - Webforms `AssignmentRule` class `id` field datatype changed (Long to String).
+    - Webforms `Layout` class `id` field datatype changed (Long to String).
+    - Webforms `Module` class `id` field datatype changed (Long to String).
+    - Webforms `Owner` class `id` field datatype changed (Long to String).
+    - Webforms `Tags` class `id` field datatype changed (Long to String).
+    - Webforms `Users` class `id` field datatype changed (Long to String).
+    - Webforms `Users` `acknowledgeVisitor` field datatype changed (AcknowledgeVisitors to AcknowledgeVisitor).
+    - Removed `updateWebForms` method from the `WebformsOperations` class.
 
 - [2.0.0](/versions/2.0.0/README.md)
 
@@ -52,16 +87,16 @@ For older versions, please [refer](https://github.com/zoho/zohocrm-scala-sdk-8.0
 ## Including the SDK in your project
 You can include the SDK to your project using:
 - Maven
-- [Gradle](/versions/2.0.0/README.md#including-the-sdk-in-your-project)
+- [Gradle](/versions/3.0.0/README.md#including-the-sdk-in-your-project)
 
-For including the latest [version](https://github.com/zoho/zohocrm-java-sdk-8.0/releases/tag/2.0.0) using Maven, include the following in your **pom.xml** file, which will get created once your **Java** project is created using Maven.
+For including the latest [version](https://github.com/zoho/zohocrm-java-sdk-8.0/releases/tag/3.0.0) using Maven, include the following in your **pom.xml** file, which will get created once your **Java** project is created using Maven.
 
     ```xml
     <dependencies>
         <dependency>
             <groupId>com.zoho.crm</groupId>
             <artifactId>zohocrmsdk-8-0</artifactId>
-            <version>2.0.0</version>
+            <version>3.0.0</version>
         </dependency>
     </dependencies>
     ```
@@ -81,4 +116,4 @@ For example, if you generate the tokens for your Sandbox environment in the CN d
 
 ---
 
-For more details, kindly refer [here](/versions/2.0.0/README.md).
+For more details, kindly refer [here](/versions/3.0.0/README.md).

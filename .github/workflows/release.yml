@@ -17,7 +17,7 @@ jobs:
       - name: 'Setup Java'
         uses: 'actions/setup-java@v1'
         with:
-          java-version: 11
+          java-version: 17
       - name: 'Cache SBT And Dependencies'
         uses: 'actions/cache@v3'
         with:
@@ -30,7 +30,7 @@ jobs:
       - name: Set up Scala and sbt
         uses: olafurpg/setup-scala@v11
         with:
-          sbt-version: '1.9.2'   # Change to your required version if needed
+          sbt-version: '1.11.7'   # Change to your required version if needed
       - name: 'Import GPG Key'
         uses: 'crazy-max/ghaction-import-gpg@v3'
         with:
