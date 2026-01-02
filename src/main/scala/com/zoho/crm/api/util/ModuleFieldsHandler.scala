@@ -1,16 +1,15 @@
 package com.zoho.crm.api.util
 
 import java.io.File
-
 import com.zoho.api.logger.SDKLogger
+
 import java.util.logging.{Level, Logger}
 import com.zoho.crm.api.exception.SDKException
-
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase
 import org.json.JSONObject
-import java.io.FileWriter
 
+import java.io.FileWriter
 import com.zoho.crm.api.Initializer
+import org.apache.hc.core5.http.ClassicHttpRequest
 
 object ModuleFieldsHandler {
   private val LOGGER: Logger = Logger.getLogger(classOf[SDKLogger].getName)
@@ -20,7 +19,7 @@ object ModuleFieldsHandler {
   @throws[SDKException]
   def deleteFieldsFile(): Unit = synchronized {
     try {
-      val converterInstance = new Converter() {
+      val converterInstance: Converter = new Converter() {
         /**
          * This abstract method is to process the API response.
          *
@@ -45,11 +44,11 @@ object ModuleFieldsHandler {
         /**
          * This abstract method is to construct the API request body.
          *
-         * @param requestBase   A HttpEntityEnclosingRequestBase class instance.
-         * @param requestObject A Object containing the API request body object.
+         * @param requestBase   A ClassicHttpRequest class instance.
+         * @param requestObject An Object containing the API request body object.
          * @throws Exception Exception
          */
-        override def appendToRequest(requestBase: HttpEntityEnclosingRequestBase, requestObject: Any): Unit ={}
+        override def appendToRequest(requestBase: ClassicHttpRequest, requestObject: Any): Unit ={}
 
         /**
          * This abstract method is to process the API response.
@@ -95,7 +94,7 @@ object ModuleFieldsHandler {
   @throws[SDKException]
   def deleteFields(module: String): Unit = {
     try {
-      val converterInstance = new Converter() {
+      val converterInstance: Converter = new Converter() {
         /**
          * This abstract method is to process the API response.
          *
@@ -121,10 +120,10 @@ object ModuleFieldsHandler {
          * This abstract method is to construct the API request body.
          *
          * @param requestBase   A HttpEntityEnclosingRequestBase class instance.
-         * @param requestObject A Object containing the API request body object.
+         * @param requestObject An Object containing the API request body object.
          * @throws Exception Exception
          */
-        override def appendToRequest(requestBase: HttpEntityEnclosingRequestBase, requestObject: Any): Unit = {}
+        override def appendToRequest(requestBase: ClassicHttpRequest, requestObject: Any): Unit = {}
 
         /**
          * This abstract method is to process the API response.

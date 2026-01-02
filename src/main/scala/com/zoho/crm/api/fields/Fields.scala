@@ -57,7 +57,7 @@ class Fields extends Model	{
 	private var multiModuleLookup:Option[MultiModuleLookup] = None
 	private var sharingProperties:Option[SharingProperties] = None
 	private var currency:Option[Currency] = None
-	private var fileUpoladOptionlist:ArrayBuffer[FileUpoladOption] = _
+	private var fileUploadOptionlist:ArrayBuffer[FileUploadOption] = _
 	private var lookup:Option[Lookup] = None
 	private var profiles:ArrayBuffer[Profile] = _
 	private var viewType:Option[ViewType] = None
@@ -522,13 +522,13 @@ class Fields extends Model	{
 		 this.keyModified("currency") = 1
 	}
 
-	def getFileUpoladOptionlist() :ArrayBuffer[FileUpoladOption]	={
-		return  this.fileUpoladOptionlist
+	def getFileUploadOptionlist() :ArrayBuffer[FileUploadOption]	={
+		return  this.fileUploadOptionlist
 	}
 
-	def setFileUpoladOptionlist( fileUpoladOptionlist: ArrayBuffer[FileUpoladOption]) 	={
-		 this.fileUpoladOptionlist = fileUpoladOptionlist
-		 this.keyModified("file_upolad_optionlist") = 1
+	def setFileUploadOptionlist( fileUploadOptionlist: ArrayBuffer[FileUploadOption]) 	={
+		 this.fileUploadOptionlist = fileUploadOptionlist
+		 this.keyModified("file_upload_optionlist") = 1
 	}
 
 	def getLookup() :Option[Lookup]	={

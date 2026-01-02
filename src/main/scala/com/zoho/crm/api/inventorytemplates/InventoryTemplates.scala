@@ -5,7 +5,7 @@ import com.zoho.crm.api.util.Model
 import java.time.OffsetDateTime
 import scala.collection.mutable.HashMap
 
-class InventoryTemplates extends Model with Template	{
+class InventoryTemplates extends Template with Model	{
 	private var createdTime:Option[OffsetDateTime] = None
 	private var modifiedTime:Option[OffsetDateTime] = None
 	private var lastUsageTime:Option[OffsetDateTime] = None

@@ -1,6 +1,5 @@
 package com.zoho.crm.api.notifications
 
-import com.zoho.crm.api.util.Choice
 import com.zoho.crm.api.util.Model
 import java.time.OffsetDateTime
 import scala.collection.mutable.HashMap
@@ -14,7 +13,7 @@ class Notification extends Event with Model	{
 	private var fields:Option[HashMap[String, Any]] = _
 	private var notifyOnRelatedAction:Option[Boolean] = None
 	private var returnAffectedFieldValues:Option[Boolean] = None
-	private var deleteEvents:Choice[Boolean] = _
+	private var deleteEvents:Option[Boolean] = None
 	private var resourceName:Option[String] = None
 	private var channelExpiry:Option[OffsetDateTime] = None
 	private var resourceId:Option[Long] = None
@@ -85,11 +84,11 @@ class Notification extends Event with Model	{
 		 this.keyModified("return_affected_field_values") = 1
 	}
 
-	def getDeleteEvents() :Choice[Boolean]	={
+	def getDeleteEvents() :Option[Boolean]	={
 		return  this.deleteEvents
 	}
 
-	def setDeleteEvents( deleteEvents: Choice[Boolean]) 	={
+	def setDeleteEvents( deleteEvents: Option[Boolean]) 	={
 		 this.deleteEvents = deleteEvents
 		 this.keyModified("_delete_events") = 1
 	}

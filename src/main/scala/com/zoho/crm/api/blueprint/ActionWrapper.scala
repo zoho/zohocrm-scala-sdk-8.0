@@ -1,20 +1,20 @@
-package com.zoho.crm.api.users
+package com.zoho.crm.api.blueprint
 
 import com.zoho.crm.api.util.Model
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.ArrayBuffer
 
 class ActionWrapper extends Model with ActionHandler	{
-	private var users:ArrayBuffer[ActionResponse] = _
+	private var blueprint:ArrayBuffer[ActionResponse] = _
 	private var keyModified:HashMap[String, Int] = HashMap()
 
-	def getUsers() :ArrayBuffer[ActionResponse]	={
-		return  this.users
+	def getBlueprint() :ArrayBuffer[ActionResponse]	={
+		return  this.blueprint
 	}
 
-	def setUsers( users: ArrayBuffer[ActionResponse]) 	={
-		 this.users = users
-		 this.keyModified("users") = 1
+	def setBlueprint( blueprint: ArrayBuffer[ActionResponse]) 	={
+		 this.blueprint = blueprint
+		 this.keyModified("blueprint") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

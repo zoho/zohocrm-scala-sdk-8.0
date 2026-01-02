@@ -1,13 +1,12 @@
 package com.zoho.crm.api.bulkread
 
-import com.zoho.crm.api.util.Choice
 import com.zoho.crm.api.util.Model
 import scala.collection.mutable.HashMap
 
 class BodyWrapper extends Model	{
 	private var callback:Option[CallBack] = None
 	private var query:Option[Query] = None
-	private var fileType:Choice[String] = _
+	private var fileType:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getCallback() :Option[CallBack]	={
@@ -28,11 +27,11 @@ class BodyWrapper extends Model	{
 		 this.keyModified("query") = 1
 	}
 
-	def getFileType() :Choice[String]	={
+	def getFileType() :Option[String]	={
 		return  this.fileType
 	}
 
-	def setFileType( fileType: Choice[String]) 	={
+	def setFileType( fileType: Option[String]) 	={
 		 this.fileType = fileType
 		 this.keyModified("file_type") = 1
 	}

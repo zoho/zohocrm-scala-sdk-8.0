@@ -3,11 +3,10 @@ package com.zoho.crm.api.util
 import com.zoho.crm.api.Initializer
 import com.zoho.crm.api.exception.SDKException
 import org.apache.commons.io.output.ByteArrayOutputStream
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase
-import org.apache.http.entity.ContentType
-import org.apache.http.entity.mime.content.ByteArrayBody
-import org.apache.http.entity.mime.{HttpMultipartMode, MultipartEntityBuilder}
+import org.apache.hc.client5.http.entity.mime.{ByteArrayBody, HttpMultipartMode, MultipartEntityBuilder}
+import org.apache.hc.core5.http.{ClassicHttpRequest, ContentType}
 import org.json.{JSONArray, JSONObject}
+import scala.jdk.CollectionConverters._
 
 import java.io.IOException
 import java.lang.reflect.InvocationTargetException
@@ -25,10 +24,10 @@ class FormDataConverter(commonAPIHandler: CommonAPIHandler) extends Converter(co
   /**
    * This abstract method is to construct the API request.
    *
-   * @param requestInstance  An Object containing the POJO class instance.
-   * @param pack           A String containing the expected method return type.
-   * @param instanceNumber An Integer containing the POJO class instance list number.
-   * @return A Object representing the API request body object.
+   * @param requestInstance An Object containing the POJO class instance.
+   * @param pack            A String containing the expected method return type.
+   * @param instanceNumber  An Integer containing the POJO class instance list number.
+   * @return An Object representing the API request body object.
    * @throws Exception Exception
    */
   @throws[NoSuchFieldException]
@@ -75,9 +74,8 @@ class FormDataConverter(commonAPIHandler: CommonAPIHandler) extends Converter(co
     request
   }
 
-  override def appendToRequest(requestBase: HttpEntityEnclosingRequestBase, requestObject: Any): Unit = {
+  override def appendToRequest(requestBase: ClassicHttpRequest, requestObject: Any): Unit = {
     val multipartEntity = MultipartEntityBuilder.create
-    multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
     if (requestObject.isInstanceOf[mutable.HashMap[_, _]]) {
       this.addFileBody(requestObject, multipartEntity)
     }
@@ -106,21 +104,21 @@ class FormDataConverter(commonAPIHandler: CommonAPIHandler) extends Converter(co
             }
           }
         case streamWrapper: StreamWrapper =>
-            val buffer = new Array[Byte](8192)
-            val output = new ByteArrayOutputStream
-            var bytesRead = 0
-            while ( {
-              bytesRead = streamWrapper.getStream.get.read(buffer)
-              bytesRead != -1
-            }) output.write(buffer, 0, bytesRead)
-            multipartEntity.addPart(key.toString, new ByteArrayBody(output.toByteArray, streamWrapper.getName.get))
+          val buffer = new Array[Byte](8192)
+          val output = new ByteArrayOutputStream
+          var bytesRead = 0
+          while ( {
+            bytesRead = streamWrapper.getStream.get.read(buffer)
+            bytesRead != -1
+          }) output.write(buffer, 0, bytesRead)
+          multipartEntity.addPart(key.toString, new ByteArrayBody(output.toByteArray, streamWrapper.getName.get))
         case _ => requestData match {
-            case requestData1: mutable.HashMap[_, _] =>
-              val json = new JSONObject(requestData1.asInstanceOf[JSONObject])
-              multipartEntity.addTextBody(key.toString, json.toString, ContentType.APPLICATION_JSON)
-            case requestData2 : Any =>
-              multipartEntity.addTextBody(key.toString, requestData2.toString, ContentType.APPLICATION_JSON)
-            case _ =>
+          case requestData1: mutable.HashMap[_, _] =>
+            val json = new JSONObject(requestData1.toMap.asJava)
+            multipartEntity.addTextBody(key.toString, json.toString, ContentType.APPLICATION_JSON)
+          case requestData2: Any =>
+            multipartEntity.addTextBody(key.toString, requestData2.toString, ContentType.APPLICATION_JSON)
+          case _ =>
         }
       }
     })

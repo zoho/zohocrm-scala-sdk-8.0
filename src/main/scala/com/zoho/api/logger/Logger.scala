@@ -1,7 +1,5 @@
 package com.zoho.api.logger
 
-import com.zoho.api.logger.Logger.Levels.Levels
-
 /**
  * This object represents the Logger level and log file path.
  */
@@ -37,7 +35,7 @@ object Logger {
   }
 }
 
-class Logger protected(levels: Levels, private var filePath: String) {
+class Logger protected(levels: com.zoho.api.logger.Logger.Levels.Levels, private var filePath: String) {
   private val level: String = levels.toString
 
   /**

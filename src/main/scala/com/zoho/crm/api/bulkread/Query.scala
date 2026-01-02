@@ -1,7 +1,6 @@
 package com.zoho.crm.api.bulkread
 
 import com.zoho.crm.api.modules.MinifiedModule
-import com.zoho.crm.api.util.Choice
 import com.zoho.crm.api.util.Model
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.ArrayBuffer
@@ -12,7 +11,7 @@ class Query extends Model	{
 	private var fields:ArrayBuffer[String] = _
 	private var page:Option[Int] = None
 	private var criteria:Option[Criteria] = None
-	private var fileType:Choice[String] = _
+	private var fileType:Option[String] = None
 	private var pageToken:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
@@ -61,11 +60,11 @@ class Query extends Model	{
 		 this.keyModified("criteria") = 1
 	}
 
-	def getFileType() :Choice[String]	={
+	def getFileType() :Option[String]	={
 		return  this.fileType
 	}
 
-	def setFileType( fileType: Choice[String]) 	={
+	def setFileType( fileType: Option[String]) 	={
 		 this.fileType = fileType
 		 this.keyModified("file_type") = 1
 	}

@@ -4,16 +4,17 @@ import com.zoho.crm.api.util.Model
 import scala.collection.mutable.HashMap
 
 class Module extends Model	{
-	private var id:Option[Long] = None
+	private var id:Option[String] = None
 	private var moduleName:Option[String] = None
 	private var apiName:Option[String] = None
+	private var displayLabel:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
-	def getId() :Option[Long]	={
+	def getId() :Option[String]	={
 		return  this.id
 	}
 
-	def setId( id: Option[Long]) 	={
+	def setId( id: Option[String]) 	={
 		 this.id = id
 		 this.keyModified("id") = 1
 	}
@@ -34,6 +35,15 @@ class Module extends Model	{
 	def setAPIName( apiName: Option[String]) 	={
 		 this.apiName = apiName
 		 this.keyModified("api_name") = 1
+	}
+
+	def getDisplayLabel() :Option[String]	={
+		return  this.displayLabel
+	}
+
+	def setDisplayLabel( displayLabel: Option[String]) 	={
+		 this.displayLabel = displayLabel
+		 this.keyModified("display_label") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

@@ -4,18 +4,21 @@ import java.io.UnsupportedEncodingException
 import java.net.URI
 import java.security.NoSuchAlgorithmException
 import java.util.logging.{Level, Logger}
-
 import com.zoho.api.logger.SDKLogger
 import com.zoho.crm.api.{Initializer, RequestProxy}
-import javax.net.ssl.SSLContext
-import org.apache.http.auth.{AuthScope, NTCredentials}
-import org.apache.http.client.config.RequestConfig
-import org.apache.http.{HttpHeaders, HttpHost, HttpResponse}
-import org.apache.http.client.methods._
-import org.apache.http.client.utils.URIBuilder
-import org.apache.http.conn.ssl.{NoopHostnameVerifier, SSLConnectionSocketFactory}
-import org.apache.http.impl.client.{BasicCredentialsProvider, CloseableHttpClient, HttpClientBuilder}
+import org.apache.hc.client5.http.auth.{AuthScope, NTCredentials}
+import org.apache.hc.client5.http.classic.methods.{HttpDelete, HttpGet, HttpPatch, HttpPost, HttpPut}
+import org.apache.hc.client5.http.config.RequestConfig
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider
+import org.apache.hc.client5.http.impl.classic.{CloseableHttpClient, HttpClients}
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder
+import org.apache.hc.client5.http.protocol.HttpClientContext
+import org.apache.hc.client5.http.ssl.{NoopHostnameVerifier, SSLConnectionSocketFactoryBuilder}
+import org.apache.hc.core5.http.{ClassicHttpRequest, ClassicHttpResponse, HttpHeaders, HttpHost}
+import org.apache.hc.core5.net.URIBuilder
+import org.apache.hc.core5.util.Timeout
 
+import javax.net.ssl.SSLContext
 import scala.collection.mutable
 
 /**
@@ -133,24 +136,23 @@ class APIHTTPConnector {
    * @return HttpResponse class instance or None
    * @throws Exception exception
    */
-  def fireRequest(converterInstance: Converter): HttpResponse = {
+  def fireRequest(converterInstance: Converter): ClassicHttpResponse = {
     val httpclient = getHttpClient
     val uriBuilder = new URIBuilder(this.url)
     this.setQueryParams(uriBuilder)
-    val requestObj = getRequestObj(uriBuilder.build)
+    val requestObj: ClassicHttpRequest = getRequestObj(uriBuilder.build)
     if (this.contentType != null) this.setContentTypeHeader()
     if (this.requestBody != null) {
-      val requestBase = requestObj.asInstanceOf[HttpEntityEnclosingRequestBase]
+      val requestBase = requestObj
       converterInstance.appendToRequest(requestBase, this.requestBody)
     }
     this.setQueryHeaders(requestObj)
     LOGGER.log(Level.INFO, this.toString(uriBuilder))
-    val response = httpclient.execute(requestObj)
-    response
+    return httpclient.executeOpen(null, requestObj, HttpClientContext.create());
   }
 
   @throws[UnsupportedEncodingException]
-  private def getRequestObj(urlPath: URI): HttpUriRequest = {
+  private def getRequestObj(urlPath: URI): ClassicHttpRequest = {
     this.requestMethod match {
       case "GET" =>
         return new HttpGet(urlPath)
@@ -168,9 +170,12 @@ class APIHTTPConnector {
 
   @throws[NoSuchAlgorithmException]
   private def getHttpClient: CloseableHttpClient = {
-    val httpClientBuilder = HttpClientBuilder.create
+    val httpClientBuilder = HttpClients.custom();
     val requestProxy = Initializer.getInitializer.getRequestProxy
-    val config = RequestConfig.custom.setConnectTimeout(Initializer.getInitializer.getSDKConfig.connectionTimeout).setConnectionRequestTimeout(Initializer.getInitializer.getSDKConfig.requestTimeout).setSocketTimeout(Initializer.getInitializer.getSDKConfig.socketTimeout).build
+    val config = RequestConfig.custom
+      .setConnectTimeout(Timeout.ofMilliseconds(Initializer.getInitializer.getSDKConfig.connectionTimeout))
+      .setConnectionRequestTimeout(Timeout.ofMilliseconds(Initializer.getInitializer.getSDKConfig.requestTimeout))
+      .setResponseTimeout(Timeout.ofMilliseconds(Initializer.getInitializer.getSDKConfig.socketTimeout)).build
     httpClientBuilder.setDefaultRequestConfig(config)
     if (requestProxy != null) {
       val proxyHost = requestProxy.getHost
@@ -178,18 +183,25 @@ class APIHTTPConnector {
       val proxy = new HttpHost(proxyHost, proxyPort)
       if (requestProxy.getUser != null) {
         val credentialsProvider = new BasicCredentialsProvider
-        credentialsProvider.setCredentials(new AuthScope(proxyHost, proxyPort), new NTCredentials(requestProxy.getUser, requestProxy.getPassword, null, requestProxy.getUserDomain))
+        val ntCredentials = new NTCredentials(requestProxy.getUser, requestProxy.getPassword.toCharArray, null, requestProxy.getUserDomain);
+        credentialsProvider.setCredentials(new AuthScope(proxyHost, proxyPort), ntCredentials)
         httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider)
       }
       httpClientBuilder.setProxy(proxy)
       LOGGER.log(Level.INFO, proxyLog(requestProxy))
     }
     val sslContext = SSLContext.getDefault
-    val sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE)
-    httpClientBuilder.setSSLSocketFactory(sslConnectionSocketFactory).build
+    val sslSocketFactory = SSLConnectionSocketFactoryBuilder.create()
+      .setSslContext(sslContext)
+      .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+      .build();
+    val cm = PoolingHttpClientConnectionManagerBuilder.create()
+      .setSSLSocketFactory(sslSocketFactory)
+      .build();
+    return httpClientBuilder.setConnectionManager(cm).build();
   }
 
-  private def setQueryHeaders(request: HttpUriRequest): Unit = {
+  private def setQueryHeaders(request: ClassicHttpRequest): Unit = {
     val headersHashMap: mutable.HashMap[String, String] = this.headers
     val headers = headersHashMap.keySet.iterator
     while (headers.hasNext) {

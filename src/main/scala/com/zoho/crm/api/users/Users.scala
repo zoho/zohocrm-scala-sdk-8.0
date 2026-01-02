@@ -87,7 +87,7 @@ class Users extends Record with Model	{
 		return  this.getKeyValue("created_time").asInstanceOf[Option[OffsetDateTime]]
 	}
 
-	override def setCreatedTime(createdTime: Option[OffsetDateTime]) 	={
+	override def setCreatedTime( createdTime: Option[OffsetDateTime]) 	={
 		 this.addKeyValue("created_time", createdTime)
 	}
 
@@ -151,7 +151,7 @@ class Users extends Record with Model	{
 		return  this.getKeyValue("created_by").asInstanceOf[Option[MinifiedUser]]
 	}
 
-	override def setCreatedBy(createdBy: Option[MinifiedUser]) 	={
+	override def setCreatedBy( createdBy: Option[MinifiedUser]) 	={
 		 this.addKeyValue("created_by", createdBy)
 	}
 

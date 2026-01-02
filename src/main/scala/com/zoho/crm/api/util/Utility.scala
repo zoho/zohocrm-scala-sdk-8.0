@@ -1,32 +1,32 @@
 package com.zoho.crm.api.util
 
-import java.io.{File, FileWriter, IOException, UnsupportedEncodingException}
-import java.time.{Instant, OffsetDateTime, ZoneId}
-import java.util
-import java.util.logging.{Level, Logger}
 import _root_.org.json.{JSONArray, JSONException, JSONObject}
 import com.zoho.api.logger.SDKLogger
 import com.zoho.crm.api.exception.SDKException
 import com.zoho.crm.api.fields.FieldsOperations.GetFieldsParam
 import com.zoho.crm.api.fields.{APIException, Fields, FieldsOperations, ResponseWrapper}
-import com.zoho.crm.api.modules.{MinifiedModule, ModulesOperations}
 import com.zoho.crm.api.modules.ModulesOperations.GetModulesHeader
+import com.zoho.crm.api.modules.{MinifiedModule, ModulesOperations}
 import com.zoho.crm.api.relatedlists.RelatedListsOperations
 import com.zoho.crm.api.relatedlists.RelatedListsOperations.GetRelatedListsParam
 import com.zoho.crm.api.users.UsersOperations.GetUsersParam
 import com.zoho.crm.api.{Header, HeaderMap, Initializer, ParameterMap, modules, relatedlists, users}
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase
+import org.apache.hc.core5.http.ClassicHttpRequest
 
+import java.io.{File, FileWriter, IOException, UnsupportedEncodingException}
+import java.time.{Instant, OffsetDateTime, ZoneId}
+import java.util
+import java.util.logging.{Level, Logger}
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
-import scala.util.control.Breaks._
+import scala.util.control.Breaks.*
 
 /**
  * This class handles module field details.
  */
-object  Utility {
-  private val apiTypeVsDataType: mutable.HashMap[String,String] = mutable.HashMap()
-  private val apiTypeVsStructureName: mutable.HashMap[String,String] = mutable.HashMap()
+object Utility {
+  private val apiTypeVsDataType: mutable.HashMap[String, String] = mutable.HashMap()
+  private val apiTypeVsStructureName: mutable.HashMap[String, String] = mutable.HashMap()
   private val LOGGER = Logger.getLogger(classOf[SDKLogger].getName)
   private var newFile: Boolean = false
   private var getModifiedModules: Boolean = false
@@ -34,8 +34,8 @@ object  Utility {
   private var apiSupportedModule = new JSONObject()
   private var moduleAPIName: String = ""
 
-  def assertNotNull(value: Object, errorCode : String, errorMessage: String): Unit = {
-    if(value == null) {
+  def assertNotNull(value: Object, errorCode: String, errorMessage: String): Unit = {
+    if (value == null) {
       throw new SDKException(errorCode, errorMessage)
     }
   }
@@ -54,7 +54,7 @@ object  Utility {
     var lastModifiedTime = lastModifiedTime1
     if (Initializer.getInitializer.getSDKConfig.getAutoRefreshFields && !newFile && !getModifiedModules && (recordFieldDetailsJson.optString(Constants.FIELDS_LAST_MODIFIED_TIME).isEmpty || forceRefresh || (System.currentTimeMillis - recordFieldDetailsJson.getString(Constants.FIELDS_LAST_MODIFIED_TIME).toLong) > 3600000)) {
       getModifiedModules = true
-      if (!forceRefresh && recordFieldDetailsJson.has(Constants.FIELDS_LAST_MODIFIED_TIME)) lastModifiedTime =  recordFieldDetailsJson.getString(Constants.FIELDS_LAST_MODIFIED_TIME)
+      if (!forceRefresh && recordFieldDetailsJson.has(Constants.FIELDS_LAST_MODIFIED_TIME)) lastModifiedTime = recordFieldDetailsJson.getString(Constants.FIELDS_LAST_MODIFIED_TIME)
       else lastModifiedTime = null
       modifyFields(recordFieldDetailsPath, lastModifiedTime)
       getModifiedModules = false
@@ -84,34 +84,34 @@ object  Utility {
       file.close()
     }
   }
-  
+
   private def verifyModuleAPIName(moduleName: String): String = {
-    if(moduleName != null && Constants.DEFAULT_MODULENAME_VS_APINAME.contains(moduleName.toLowerCase) && Constants.DEFAULT_MODULENAME_VS_APINAME.get(moduleName.toLowerCase) != null) {
+    if (moduleName != null && Constants.DEFAULT_MODULENAME_VS_APINAME.contains(moduleName.toLowerCase) && Constants.DEFAULT_MODULENAME_VS_APINAME.get(moduleName.toLowerCase) != null) {
       return Constants.DEFAULT_MODULENAME_VS_APINAME(moduleName.toLowerCase)
     }
     val recordFieldDetailsPath: String = getFileName
     val recordFieldDetails = new File(recordFieldDetailsPath)
-    if(recordFieldDetails.exists) {
+    if (recordFieldDetails.exists) {
       val fieldsJSON = Initializer.getJSON(recordFieldDetailsPath)
-      if(fieldsJSON.has(Constants.SDK_MODULE_METADATA) && fieldsJSON.getJSONObject(Constants.SDK_MODULE_METADATA).has(moduleName.toLowerCase)) {
+      if (fieldsJSON.has(Constants.SDK_MODULE_METADATA) && fieldsJSON.getJSONObject(Constants.SDK_MODULE_METADATA).has(moduleName.toLowerCase)) {
         return fieldsJSON.getJSONObject(Constants.SDK_MODULE_METADATA).getJSONObject(moduleName.toLowerCase).getString(Constants.API_NAME)
       }
     }
     moduleName
   }
 
-  private def setHandlerAPIPath(moduleAPIName: String,  handlerInstance: CommonAPIHandler): Unit = synchronized {
-    if(handlerInstance == null) {
+  private def setHandlerAPIPath(moduleAPIName: String, handlerInstance: CommonAPIHandler): Unit = synchronized {
+    if (handlerInstance == null) {
       return
     }
     var apiPath = handlerInstance.getAPIPath
-    if(apiPath.toLowerCase.contains(moduleAPIName.toLowerCase)) {
+    if (apiPath.toLowerCase.contains(moduleAPIName.toLowerCase)) {
       val apiPathSplit: Array[String] = apiPath.split("/")
-      for(index <- apiPathSplit.indices) {
-        if(apiPathSplit(index).equalsIgnoreCase(moduleAPIName)){
+      for (index <- apiPathSplit.indices) {
+        if (apiPathSplit(index).equalsIgnoreCase(moduleAPIName)) {
           apiPathSplit(index) = moduleAPIName
         }
-        else if(Constants.DEFAULT_MODULENAME_VS_APINAME.contains(apiPathSplit(index).toLowerCase()) && Constants.DEFAULT_MODULENAME_VS_APINAME.get(apiPathSplit(index).toLowerCase) != null) {
+        else if (Constants.DEFAULT_MODULENAME_VS_APINAME.contains(apiPathSplit(index).toLowerCase()) && Constants.DEFAULT_MODULENAME_VS_APINAME.get(apiPathSplit(index).toLowerCase) != null) {
           apiPathSplit(index) = Constants.DEFAULT_MODULENAME_VS_APINAME(apiPathSplit(index).toLowerCase)
         }
       }
@@ -121,11 +121,11 @@ object  Utility {
   }
 
   /**
-  * This method to fetch field details of the current module for the current user and store the result in a JSON file.
-  * 
-  * @param moduleAPIName A String containing the CRM module API name.
-  * @param handlerInstance A CommonAPIHandler Instance
-  */
+   * This method to fetch field details of the current module for the current user and store the result in a JSON file.
+   *
+   * @param moduleAPIName   A String containing the CRM module API name.
+   * @param handlerInstance A CommonAPIHandler Instance
+   */
   def getFields(moduleAPIName: String, handlerInstance: CommonAPIHandler): Unit = synchronized {
     if (moduleAPIName.contains(",")) {
       val modules = moduleAPIName.split(",")
@@ -148,7 +148,7 @@ object  Utility {
    */
   @throws[SDKException]
   private def getFieldsInfo(moduleName: String, handlerInstance: CommonAPIHandler): Unit = synchronized {
-    var recordFieldDetailsPath:String = null
+    var recordFieldDetailsPath: String = null
     val lastModifiedTime: String = null
     var moduleAPIName: String = moduleName
     try {
@@ -156,7 +156,7 @@ object  Utility {
       if (!resourcesPath.exists) resourcesPath.mkdirs
       moduleAPIName = verifyModuleAPIName(moduleAPIName)
       setHandlerAPIPath(moduleAPIName, handlerInstance)
-      if(handlerInstance != null && handlerInstance.getModuleAPIName == null && !Constants.SKIP_MODULES.contains(moduleAPIName.toLowerCase))  return
+      if (handlerInstance != null && handlerInstance.getModuleAPIName == null && !Constants.SKIP_MODULES.contains(moduleAPIName.toLowerCase)) return
       recordFieldDetailsPath = getFileName
       val recordFieldDetails = new File(recordFieldDetailsPath)
       if (recordFieldDetails.exists) {
@@ -167,10 +167,10 @@ object  Utility {
         fillDatatype()
         apiSupportedModule = if (apiSupportedModule.length() > 0) apiSupportedModule
         else getModules(null)
-        var recordFieldDetailsJson = if (recordFieldDetails.exists())  Initializer.getJSON(recordFieldDetailsPath) 
+        var recordFieldDetailsJson = if (recordFieldDetails.exists()) Initializer.getJSON(recordFieldDetailsPath)
         else new JSONObject
         recordFieldDetailsJson.put(Constants.FIELDS_LAST_MODIFIED_TIME, String.valueOf(System.currentTimeMillis))
-        if(apiSupportedModule.length() > 0) {
+        if (apiSupportedModule.length() > 0) {
           apiSupportedModule.keySet().forEach(module => {
             if (!recordFieldDetailsJson.has(module.toLowerCase)) {
               val moduleData = apiSupportedModule.getJSONObject(module.toLowerCase)
@@ -220,7 +220,7 @@ object  Utility {
         file.close()
       }
     } catch {
-      case e@(_: IOException | _:  JSONException | _: SDKException) =>
+      case e@(_: IOException | _: JSONException | _: SDKException) =>
         if (recordFieldDetailsPath != null && new File(recordFieldDetailsPath).exists) {
           try {
             val recordFieldDetailsJson = Initializer.getJSON(recordFieldDetailsPath)
@@ -246,7 +246,7 @@ object  Utility {
               throw exception
           }
         }
-        var exception:SDKException = new SDKException(Constants.EXCEPTION, e.asInstanceOf[Exception])
+        var exception: SDKException = new SDKException(Constants.EXCEPTION, e.asInstanceOf[Exception])
         e match {
           case kException: SDKException =>
             exception = kException
@@ -260,7 +260,7 @@ object  Utility {
   @throws[IOException]
   @throws[SDKException]
   private def modifyFields(recordFieldDetailsPath: String, modifiedTime: String): Unit = {
-    val modifiedModules:JSONObject = getModules(modifiedTime)
+    val modifiedModules: JSONObject = getModules(modifiedTime)
     val recordFieldDetailsJson = Initializer.getJSON(recordFieldDetailsPath)
     recordFieldDetailsJson.put(Constants.FIELDS_LAST_MODIFIED_TIME, String.valueOf(System.currentTimeMillis))
     var file = new FileWriter(recordFieldDetailsPath)
@@ -289,11 +289,12 @@ object  Utility {
     val fieldsJSON = recordFieldDetailsJson.getJSONObject(module.toLowerCase)
     fieldsJSON.keySet.forEach((key: String) => {
       def foo(key: String) = if (fieldsJSON.getJSONObject(key).has(Constants.SUBFORM) && fieldsJSON.getJSONObject(key).getBoolean(Constants.SUBFORM) && recordFieldDetailsJson.has(fieldsJSON.getJSONObject(key).getString(Constants.MODULE.toLowerCase))) subformModules.addOne(fieldsJSON.getJSONObject(key).getString(Constants.MODULE.toLowerCase))
+
       foo(key)
     })
     recordFieldDetailsJson.remove(module.toLowerCase)
     if (subformModules.nonEmpty) {
-      for ( subformModule <- subformModules ) {
+      for (subformModule <- subformModules) {
         deleteFields(recordFieldDetailsJson, subformModule)
       }
     }
@@ -306,7 +307,7 @@ object  Utility {
 
       override def formRequest(requestObject: Any, pack: String, instanceNumber: Integer, memberDetails: JSONObject): Any = None
 
-      override def appendToRequest(requestBase: HttpEntityEnclosingRequestBase, requestObject: Any): Unit = {}
+      override def appendToRequest(requestBase: ClassicHttpRequest, requestObject: Any): Unit = {}
 
       override def getWrappedResponse(response: Any, pack: String): Option[java.util.ArrayList[Any]] = None
     }
@@ -359,7 +360,7 @@ object  Utility {
   @throws[JSONException]
   @throws[SDKException]
   private def checkRelatedListExists(relatedModuleName: String, moduleRelatedListJA: JSONArray, commonAPIHandler: CommonAPIHandler): Boolean = {
-    for ( index <- 0 until moduleRelatedListJA.length ) {
+    for (index <- 0 until moduleRelatedListJA.length) {
       val relatedListJO = moduleRelatedListJA.getJSONObject(index)
       if (relatedListJO.getString(Constants.API_NAME) != null && relatedListJO.getString(Constants.API_NAME).equalsIgnoreCase(relatedModuleName)) {
         if (relatedListJO.getString(Constants.HREF) == Constants.NULL_VALUE) throw new SDKException(Constants.UNSUPPORTED_IN_API, commonAPIHandler.getHttpMethod + " " + commonAPIHandler.getAPIPath + Constants.UNSUPPORTED_IN_API_MESSAGE)
@@ -378,7 +379,7 @@ object  Utility {
     val relatedListsOperations = new RelatedListsOperations(null)
     val paramInstance = new ParameterMap()
     paramInstance.add(new GetRelatedListsParam().module, moduleAPIName)
-    val responseOption  = relatedListsOperations.getRelatedLists(Option(paramInstance))
+    val responseOption = relatedListsOperations.getRelatedLists(Option(paramInstance))
     val relatedListJA = new JSONArray
     if (responseOption.isDefined) {
       val response = responseOption.get
@@ -388,12 +389,12 @@ object  Utility {
         responseHandler match {
           case responseWrapper: relatedlists.ResponseWrapper =>
             val relatedLists = responseWrapper.getRelatedLists()
-            for ( relatedList <- relatedLists ) {
+            for (relatedList <- relatedLists) {
               val relatedListDetail = new JSONObject
-              relatedListDetail.put(Constants.API_NAME, if (relatedList.getAPIName().isDefined)relatedList.getAPIName().get else Constants.NULL_VALUE)
+              relatedListDetail.put(Constants.API_NAME, if (relatedList.getAPIName().isDefined) relatedList.getAPIName().get else Constants.NULL_VALUE)
               relatedListDetail.put(Constants.MODULE.toLowerCase, if (relatedList.getModule().isDefined) relatedList.getModule().get else Constants.NULL_VALUE)
-              relatedListDetail.put(Constants.NAME, if (relatedList.getName().isDefined)relatedList.getName().get  else Constants.NULL_VALUE)
-              relatedListDetail.put(Constants.HREF, if (relatedList.getHref().isDefined) relatedList.getHref().get  else Constants.NULL_VALUE)
+              relatedListDetail.put(Constants.NAME, if (relatedList.getName().isDefined) relatedList.getName().get else Constants.NULL_VALUE)
+              relatedListDetail.put(Constants.HREF, if (relatedList.getHref().isDefined) relatedList.getHref().get else Constants.NULL_VALUE)
               relatedListJA.put(relatedListDetail)
             }
           case _: relatedlists.APIException =>
@@ -466,7 +467,7 @@ object  Utility {
                 errorResponse.put(Constants.STATUS, exception.getStatus().getValue)
                 errorResponse.put(Constants.MESSAGE, exception.getMessage())
                 val exceptionInstance = new SDKException(Constants.API_EXCEPTION, errorResponse)
-                if (Utility.moduleAPIName.equalsIgnoreCase(moduleAPIName)){
+                if (Utility.moduleAPIName.equalsIgnoreCase(moduleAPIName)) {
                   throw exceptionInstance
                 }
                 LOGGER.log(Level.SEVERE, Constants.API_EXCEPTION, exceptionInstance)
@@ -486,11 +487,11 @@ object  Utility {
   def verifyPhotoSupport(moduleName: String): Boolean = synchronized {
     try {
       val moduleAPIName = verifyModuleAPIName(moduleName)
-      if(Constants.PHOTO_SUPPORTED_MODULES.contains(moduleAPIName.toLowerCase)) return true
+      if (Constants.PHOTO_SUPPORTED_MODULES.contains(moduleAPIName.toLowerCase)) return true
       val modules: JSONObject = getModuleNames
-      if(modules.optJSONObject(moduleAPIName.toLowerCase()) != null) {
+      if (modules.optJSONObject(moduleAPIName.toLowerCase()) != null) {
         val moduleMetaData = modules.getJSONObject(moduleAPIName.toLowerCase)
-        if(moduleMetaData.has(Constants.GENERATED_TYPE) && !moduleMetaData.getString(Constants.GENERATED_TYPE).equals(Constants.GENERATED_TYPE_CUSTOM)) {
+        if (moduleMetaData.has(Constants.GENERATED_TYPE) && !moduleMetaData.getString(Constants.GENERATED_TYPE).equals(Constants.GENERATED_TYPE_CUSTOM)) {
           throw new SDKException(Constants.UPLOAD_PHOTO_UNSUPPORTED_ERROR, Constants.UPLOAD_PHOTO_UNSUPPORTED_MESSAGE + moduleAPIName)
         }
       }
@@ -505,13 +506,13 @@ object  Utility {
     return true
   }
 
-  private def getModuleNames:  JSONObject = {
+  private def getModuleNames: JSONObject = {
     var moduleData = new JSONObject()
     val resourcesPath = new File(Initializer.getInitializer.getResourcePath + File.separator + Constants.FIELD_DETAILS_DIRECTORY)
     if (!resourcesPath.exists) resourcesPath.mkdirs
     val recordFieldDetailsPath: String = getFileName
     val recordFieldDetails = new File(recordFieldDetailsPath)
-    if(!recordFieldDetails.exists || (recordFieldDetails.exists && (Initializer.getJSON(recordFieldDetailsPath).optJSONObject(Constants.SDK_MODULE_METADATA) == null || Initializer.getJSON(recordFieldDetailsPath).optJSONObject(Constants.SDK_MODULE_METADATA).length == 0))) {
+    if (!recordFieldDetails.exists || (recordFieldDetails.exists && (Initializer.getJSON(recordFieldDetailsPath).optJSONObject(Constants.SDK_MODULE_METADATA) == null || Initializer.getJSON(recordFieldDetailsPath).optJSONObject(Constants.SDK_MODULE_METADATA).length == 0))) {
       moduleData = getModules(null)
       writeModuleMetaData(recordFieldDetailsPath, moduleData)
       return moduleData
@@ -555,7 +556,7 @@ object  Utility {
         responseObject match {
           case wrapper: modules.ResponseWrapper =>
             val modules = wrapper.getModules()
-            for ( module <- modules ) {
+            for (module <- modules) {
               if (module.getAPISupported().get) {
                 val moduleDetails = new JSONObject()
                 moduleDetails.put(Constants.API_NAME, module.getAPIName().get)
@@ -575,7 +576,7 @@ object  Utility {
         }
       }
     }
-    if(header == null) {
+    if (header == null) {
       try {
         val resourcesPath = new File(Initializer.getInitializer.getResourcePath + File.separator + Constants.FIELD_DETAILS_DIRECTORY)
         if (!resourcesPath.exists()) resourcesPath.mkdirs
@@ -641,31 +642,31 @@ object  Utility {
       fieldDetail.put(Constants.LOOKUP, true)
       return
     }
-    else if((keyName.equalsIgnoreCase(Constants.TERRITORIES) || keyName.equalsIgnoreCase(Constants.TERRITORY)) && field.getCustomField() != null && !field.getCustomField().get) {
-			fieldDetail.put(Constants.NAME, keyName)
-			fieldDetail.put(Constants.TYPE, Constants.LIST_NAMESPACE)
-			fieldDetail.put(Constants.STRUCTURE_NAME, Constants.TERRITORY_NAMESPACE)
-			fieldDetail.put(Constants.LOOKUP, true)
-			return
-		}
-		else if(keyName.equalsIgnoreCase(Constants.PRODUCT_NAME) && Constants.INVENTORY_MODULES_ITEMS.contains(moduleAPIName.toLowerCase())) {
-			fieldDetail.put(Constants.NAME, keyName)
-			fieldDetail.put(Constants.TYPE, Constants.LINEITEM_PRODUCT)
-			fieldDetail.put(Constants.STRUCTURE_NAME, Constants.LINEITEM_PRODUCT)
-			fieldDetail.put(Constants.SKIP_MANDATORY, true)
-			return
-		}
-		else if(keyName.equalsIgnoreCase(Constants.DISCOUNT) && Constants.INVENTORY_MODULES_ITEMS.contains(moduleAPIName.toLowerCase())) {
-			fieldDetail.put(Constants.NAME, keyName)
-			fieldDetail.put(Constants.TYPE, Constants.STRING_NAMESPACE)
-			return
-		}
-		else if(keyName.equalsIgnoreCase(Constants.TAX) && moduleAPIName.toLowerCase() == Constants.PRODUCTS.toLowerCase()) {
-			fieldDetail.put(Constants.NAME, keyName)
-			fieldDetail.put(Constants.TYPE, Constants.LIST_NAMESPACE)
-			fieldDetail.put(Constants.STRUCTURE_NAME, Constants.TAX_NAMESPACE)
-			return
-		}
+    else if ((keyName.equalsIgnoreCase(Constants.TERRITORIES) || keyName.equalsIgnoreCase(Constants.TERRITORY)) && field.getCustomField() != null && !field.getCustomField().get) {
+      fieldDetail.put(Constants.NAME, keyName)
+      fieldDetail.put(Constants.TYPE, Constants.LIST_NAMESPACE)
+      fieldDetail.put(Constants.STRUCTURE_NAME, Constants.TERRITORY_NAMESPACE)
+      fieldDetail.put(Constants.LOOKUP, true)
+      return
+    }
+    else if (keyName.equalsIgnoreCase(Constants.PRODUCT_NAME) && Constants.INVENTORY_MODULES_ITEMS.contains(moduleAPIName.toLowerCase())) {
+      fieldDetail.put(Constants.NAME, keyName)
+      fieldDetail.put(Constants.TYPE, Constants.LINEITEM_PRODUCT)
+      fieldDetail.put(Constants.STRUCTURE_NAME, Constants.LINEITEM_PRODUCT)
+      fieldDetail.put(Constants.SKIP_MANDATORY, true)
+      return
+    }
+    else if (keyName.equalsIgnoreCase(Constants.DISCOUNT) && Constants.INVENTORY_MODULES_ITEMS.contains(moduleAPIName.toLowerCase())) {
+      fieldDetail.put(Constants.NAME, keyName)
+      fieldDetail.put(Constants.TYPE, Constants.STRING_NAMESPACE)
+      return
+    }
+    else if (keyName.equalsIgnoreCase(Constants.TAX) && moduleAPIName.toLowerCase() == Constants.PRODUCTS.toLowerCase()) {
+      fieldDetail.put(Constants.NAME, keyName)
+      fieldDetail.put(Constants.TYPE, Constants.LIST_NAMESPACE)
+      fieldDetail.put(Constants.STRUCTURE_NAME, Constants.TAX_NAMESPACE)
+      return
+    }
     else if (apiTypeVsDataType.keySet.contains(apiType)) {
       fieldDetail.put(Constants.TYPE, apiTypeVsDataType(apiType))
     }
@@ -674,7 +675,7 @@ object  Utility {
         val returnType = field.getFormula().get.getReturnType().orNull
         val apiDataType = apiTypeVsDataType.get(returnType) match {
           case Some(value) => value
-          case _ =>null
+          case _ => null
         }
         if (apiDataType != null) fieldDetail.put(Constants.TYPE, apiDataType)
       }
@@ -685,12 +686,12 @@ object  Utility {
         val returnType = field.getRollupSummary().get.getReturnType().orNull
         val apiDataType = apiTypeVsDataType.get(returnType) match {
           case Some(value) => value
-          case _ =>null
+          case _ => null
         }
         val jsonType = field.getJsonType().orNull
         val jsonType1 = apiTypeVsDataType.get(jsonType) match {
           case Some(value) => value
-          case _ =>null
+          case _ => null
         }
         if (apiDataType != null) {
           fieldDetail.put(Constants.TYPE, apiDataType)
@@ -707,48 +708,48 @@ object  Utility {
     if (apiType.toLowerCase.equalsIgnoreCase(Constants.CONSENT_LOOKUP) || apiType.toLowerCase().equalsIgnoreCase(Constants.OWNER_LOOKUP)) {
       fieldDetail.put(Constants.SKIP_MANDATORY, true)
     }
-    if(apiType.toLowerCase().equalsIgnoreCase(Constants.MULTI_SELECT_LOOKUP)) {
-			fieldDetail.put(Constants.SKIP_MANDATORY, true)
-			if(field.getMultiselectlookup() != null && field.getMultiselectlookup().isDefined) {
+    if (apiType.toLowerCase().equalsIgnoreCase(Constants.MULTI_SELECT_LOOKUP)) {
+      fieldDetail.put(Constants.SKIP_MANDATORY, true)
+      if (field.getMultiselectlookup() != null && field.getMultiselectlookup().isDefined) {
         val linkingDetails = field.getMultiselectlookup().get.getLinkingDetails()
-        if (linkingDetails != null && linkingDetails.isDefined){
+        if (linkingDetails != null && linkingDetails.isDefined) {
           val linkingModule = linkingDetails.get.getModule()
-          if (linkingModule != null && linkingModule.isDefined){
+          if (linkingModule != null && linkingModule.isDefined) {
             fieldDetail.put(Constants.MODULE.toLowerCase, linkingModule.get.getAPIName())
             module = new MinifiedModule
             module.setAPIName(linkingModule.get.getAPIName())
             module.setId(linkingModule.get.getId())
           }
         }
-			}
-			fieldDetail.put(Constants.SUBFORM, true)
-		}
-		if(apiType.toLowerCase().equalsIgnoreCase(Constants.MULTI_USER_LOOKUP)) {
-			fieldDetail.put(Constants.SKIP_MANDATORY, true)
-			if(field.getMultiuserlookup() != null && field.getMultiuserlookup().isDefined) {
+      }
+      fieldDetail.put(Constants.SUBFORM, true)
+    }
+    if (apiType.toLowerCase().equalsIgnoreCase(Constants.MULTI_USER_LOOKUP)) {
+      fieldDetail.put(Constants.SKIP_MANDATORY, true)
+      if (field.getMultiuserlookup() != null && field.getMultiuserlookup().isDefined) {
         val linkingDetails = field.getMultiuserlookup().get.getLinkingDetails()
-        if (linkingDetails != null && linkingDetails.isDefined){
+        if (linkingDetails != null && linkingDetails.isDefined) {
           val linkingModule = linkingDetails.get.getModule()
-          if (linkingModule != null && linkingModule.isDefined){
+          if (linkingModule != null && linkingModule.isDefined) {
             fieldDetail.put(Constants.MODULE.toLowerCase, linkingModule.get.getAPIName())
             module = new MinifiedModule
             module.setAPIName(linkingModule.get.getAPIName())
             module.setId(linkingModule.get.getId())
           }
         }
-			}
-			fieldDetail.put(Constants.SUBFORM, true)
-		}
+      }
+      fieldDetail.put(Constants.SUBFORM, true)
+    }
     if (apiType.toLowerCase.equalsIgnoreCase(Constants.MULTI_MODULE_LOOKUP)) {
       fieldDetail.put(Constants.SKIP_MANDATORY, true)
     }
     if (apiTypeVsStructureName.contains(apiType)) {
       fieldDetail.put(Constants.STRUCTURE_NAME, apiTypeVsStructureName(apiType))
     }
-    if (apiType.equalsIgnoreCase(Constants.PICKLIST) && (field.getPickListValues != null && field.getPickListValues().nonEmpty)) {
+    if (apiType.equalsIgnoreCase(Constants.PICKLIST) && (field.getPickListValues() != null && field.getPickListValues().nonEmpty)) {
       fieldDetail.put(Constants.PICKLIST, true)
       val values = new JSONArray()
-      for(plv <- field.getPickListValues() ){
+      for (plv <- field.getPickListValues()) {
         values.put(plv.getDisplayValue().get)
       }
       fieldDetail.put(Constants.VALUES, values)
@@ -772,7 +773,7 @@ object  Utility {
       else module = new MinifiedModule
       fieldDetail.put(Constants.LOOKUP, true)
     }
-    if (module != null && module.getAPIName != null && module.getAPIName().isDefined &&  module.getAPIName().get.nonEmpty) {
+    if (module != null && module.getAPIName().isDefined && module.getAPIName().get != null&& module.getAPIName().get.nonEmpty) {
       getFieldsInfo(module.getAPIName().get, null)
     }
     fieldDetail.put(Constants.NAME, keyName)
@@ -780,123 +781,123 @@ object  Utility {
 
   private def fillDatatype(): Unit = {
     if (apiTypeVsDataType.nonEmpty) return
-    val fieldAPINamesString = Array[String]("textarea", "text", "website", "email", "phone", "mediumtext", "profileimage","autonumber") // No I18N
+    val fieldAPINamesString = Array[String]("textarea", "text", "website", "email", "phone", "mediumtext", "profileimage", "autonumber") // No I18N
     val fieldAPINamesInteger = Array[String]("integer")
     val fieldAPINamesBoolean = Array[String]("boolean")
     val fieldAPINamesLong = Array[String]("long", "bigint")
     val fieldAPINamesDouble = Array[String]("double", "percent", "currency")
-    val fieldAPINamesFieldFile = Array[String](  "fileupload")
-    val fieldAPINamesDateTime = Array[String]("datetime", "event_reminder" )
+    val fieldAPINamesFieldFile = Array[String]("fileupload")
+    val fieldAPINamesDateTime = Array[String]("datetime", "event_reminder")
     val fieldAPINamesDate = Array[String]("date")
     val fieldAPINamesLookup = Array[String]("lookup")
     val fieldAPINamesPickList = Array[String]("picklist")
     val fieldAPINamesMultiSelectPickList = Array[String]("multiselectpicklist")
     val fieldAPINamesSubForm = Array[String]("subform")
-    val fieldAPINamesOwnerLookUp = Array[String]("ownerlookup", "userlookup" )
+    val fieldAPINamesOwnerLookUp = Array[String]("ownerlookup", "userlookup")
     val fieldAPINamesMultiUserLookUp = Array[String]("multiuserlookup")
     val fieldAPINameTaskRemindAt = Array[String]("ALARM")
     val fieldAPINameRecurringActivity = Array[String]("RRULE")
     val fieldAPINameReminder = Array[String]("multireminder")
     val fieldAPINameConsentLookUp = Array[String]("consent_lookup")
     val fieldAPINameImageUpload = Array[String]("imageupload")
-		val fieldAPInameMultiSelectLookUp = Array[String]("multiselectlookup")
-		val fieldAPINameLineTax = Array[String]("linetax")
+    val fieldAPInameMultiSelectLookUp = Array[String]("multiselectlookup")
+    val fieldAPINameLineTax = Array[String]("linetax")
     val fieldAPINamesModule = Array[String]("module")
-		val fieldAPINamesLayout = Array[String]("layout")
+    val fieldAPINamesLayout = Array[String]("layout")
     val fieldAPINamesMultiModuleLookUp = Array[String]("multi_module_lookup")
-    val fieldAPINamesTimeRange =Array[String]("time_range")
-    for ( fieldAPIName <- fieldAPINamesString ) {
+    val fieldAPINamesTimeRange = Array[String]("time_range")
+    for (fieldAPIName <- fieldAPINamesString) {
       apiTypeVsDataType.put(fieldAPIName, Constants.STRING_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINamesInteger ) {
+    for (fieldAPIName <- fieldAPINamesInteger) {
       apiTypeVsDataType.put(fieldAPIName, Constants.INTEGER_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINamesBoolean ) {
+    for (fieldAPIName <- fieldAPINamesBoolean) {
       apiTypeVsDataType.put(fieldAPIName, Constants.BOOLEAN_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINamesLong ) {
+    for (fieldAPIName <- fieldAPINamesLong) {
       apiTypeVsDataType.put(fieldAPIName, Constants.LONG_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINamesDouble ) {
+    for (fieldAPIName <- fieldAPINamesDouble) {
       apiTypeVsDataType.put(fieldAPIName, Constants.DOUBLE_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINamesDateTime ) {
+    for (fieldAPIName <- fieldAPINamesDateTime) {
       apiTypeVsDataType.put(fieldAPIName, Constants.DATETIME_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINamesDate ) {
+    for (fieldAPIName <- fieldAPINamesDate) {
       apiTypeVsDataType.put(fieldAPIName, Constants.DATE_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINamesLookup ) {
+    for (fieldAPIName <- fieldAPINamesLookup) {
       apiTypeVsDataType.put(fieldAPIName, Constants.RECORD_NAMESPACE)
       apiTypeVsStructureName.put(fieldAPIName, Constants.RECORD_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINamesPickList ) {
+    for (fieldAPIName <- fieldAPINamesPickList) {
       apiTypeVsDataType.put(fieldAPIName, Constants.CHOICE_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINamesMultiSelectPickList ) {
+    for (fieldAPIName <- fieldAPINamesMultiSelectPickList) {
       apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
       apiTypeVsStructureName.put(fieldAPIName, Constants.CHOICE_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINamesSubForm ) {
+    for (fieldAPIName <- fieldAPINamesSubForm) {
       apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
       apiTypeVsStructureName.put(fieldAPIName, Constants.RECORD_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINamesOwnerLookUp ) {
+    for (fieldAPIName <- fieldAPINamesOwnerLookUp) {
       apiTypeVsDataType.put(fieldAPIName, Constants.USER_NAMESPACE)
       apiTypeVsStructureName.put(fieldAPIName, Constants.USER_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINamesMultiUserLookUp ) {
+    for (fieldAPIName <- fieldAPINamesMultiUserLookUp) {
       apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
       apiTypeVsStructureName.put(fieldAPIName, Constants.RECORD_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINamesFieldFile ) {
+    for (fieldAPIName <- fieldAPINamesFieldFile) {
       apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
       apiTypeVsStructureName.put(fieldAPIName, Constants.FIELD_FILE_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINameTaskRemindAt ) {
+    for (fieldAPIName <- fieldAPINameTaskRemindAt) {
       apiTypeVsDataType.put(fieldAPIName, Constants.REMINDAT_NAMESPACE)
       apiTypeVsStructureName.put(fieldAPIName, Constants.REMINDAT_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINameRecurringActivity ) {
+    for (fieldAPIName <- fieldAPINameRecurringActivity) {
       apiTypeVsDataType.put(fieldAPIName, Constants.RECURRING_ACTIVITY_NAMESPACE)
       apiTypeVsStructureName.put(fieldAPIName, Constants.RECURRING_ACTIVITY_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINameReminder ) {
+    for (fieldAPIName <- fieldAPINameReminder) {
       apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
       apiTypeVsStructureName.put(fieldAPIName, Constants.REMINDER_NAMESPACE)
     }
-    for ( fieldAPIName <- fieldAPINameConsentLookUp ) {
+    for (fieldAPIName <- fieldAPINameConsentLookUp) {
       apiTypeVsDataType.put(fieldAPIName, Constants.CONSENT_NAMESPACE)
       apiTypeVsStructureName.put(fieldAPIName, Constants.CONSENT_NAMESPACE)
     }
     for (fieldAPIName <- fieldAPINameImageUpload) {
-			apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
-			apiTypeVsStructureName.put(fieldAPIName, Constants.IMAGEUPLOAD_NAMESPACE)
-		}
-		for (fieldAPIName <- fieldAPInameMultiSelectLookUp) {
-			apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
-			apiTypeVsStructureName.put(fieldAPIName, Constants.RECORD_NAMESPACE)
-		}
-		for (fieldAPIName <- fieldAPINameLineTax) {
-			apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
-			apiTypeVsStructureName.put(fieldAPIName, Constants.LINE_TAX_NAMESPACE)
-		}
+      apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
+      apiTypeVsStructureName.put(fieldAPIName, Constants.IMAGEUPLOAD_NAMESPACE)
+    }
+    for (fieldAPIName <- fieldAPInameMultiSelectLookUp) {
+      apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
+      apiTypeVsStructureName.put(fieldAPIName, Constants.RECORD_NAMESPACE)
+    }
+    for (fieldAPIName <- fieldAPINameLineTax) {
+      apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
+      apiTypeVsStructureName.put(fieldAPIName, Constants.LINE_TAX_NAMESPACE)
+    }
     for (fieldAPIName <- fieldAPINamesModule) {
-			apiTypeVsDataType.put(fieldAPIName, Constants.MODULE_NAMESPACE)
-			apiTypeVsStructureName.put(fieldAPIName, Constants.MODULE_NAMESPACE)
-		}
-    for ( fieldAPIName <- fieldAPINamesMultiModuleLookUp ) {
+      apiTypeVsDataType.put(fieldAPIName, Constants.MODULE_NAMESPACE)
+      apiTypeVsStructureName.put(fieldAPIName, Constants.MODULE_NAMESPACE)
+    }
+    for (fieldAPIName <- fieldAPINamesMultiModuleLookUp) {
       apiTypeVsDataType.put(fieldAPIName, Constants.RECORD_NAMESPACE)
       apiTypeVsStructureName.put(fieldAPIName, Constants.MODULE_NAMESPACE)
     }
     for (fieldAPIName <- fieldAPINamesLayout) {
-			apiTypeVsDataType.put(fieldAPIName, Constants.LAYOUT_NAMESPACE)
-			apiTypeVsStructureName.put(fieldAPIName, Constants.LAYOUT_NAMESPACE)
-		}
-		for (fieldAPIName <- fieldAPINamesTimeRange) {
-			apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
-			apiTypeVsStructureName.put(fieldAPIName, Constants.TIME_RANGE_NAMESPACE)
-		}
+      apiTypeVsDataType.put(fieldAPIName, Constants.LAYOUT_NAMESPACE)
+      apiTypeVsStructureName.put(fieldAPIName, Constants.LAYOUT_NAMESPACE)
+    }
+    for (fieldAPIName <- fieldAPINamesTimeRange) {
+      apiTypeVsDataType.put(fieldAPIName, Constants.LIST_NAMESPACE)
+      apiTypeVsStructureName.put(fieldAPIName, Constants.TIME_RANGE_NAMESPACE)
+    }
   }
 
   @throws[Exception]
@@ -904,7 +905,7 @@ object  Utility {
   def getUserName(token: String): String = {
     var userName: String = null
     val paramInstance = new ParameterMap
-    paramInstance.add(new GetUsersParam().type1, new Choice[String](Constants.CURRENTUSER))
+    paramInstance.add(new GetUsersParam().type1, Constants.CURRENTUSER)
     val headerInstance = new HeaderMap
     val handlerInstance = new CommonAPIHandler
     var apiPath = new String
@@ -933,7 +934,7 @@ object  Utility {
                 }
               }
             case _: users.APIException =>
-              val exception = responseHandler.asInstanceOf[APIException]
+              val exception = responseHandler.asInstanceOf[users.APIException]
               val errorResponse = new JSONObject()
               errorResponse.put(Constants.CODE, exception.getCode().getValue)
               errorResponse.put(Constants.STATUS, exception.getStatus().getValue)
@@ -944,8 +945,8 @@ object  Utility {
         }
       }
     }
-    var orgID = getUserOrgID(token)
-    if (userName == null || orgID == null){
+    val orgID = getUserOrgID(token)
+    if (userName == null || orgID == null) {
       return null
     }
     userName + ":" + getUserOrgID(token)

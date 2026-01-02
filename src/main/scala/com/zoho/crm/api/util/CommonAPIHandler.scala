@@ -10,8 +10,9 @@ import com.zoho.api.logger.SDKLogger
 import com.zoho.crm.api.Param
 import com.zoho.crm.api.Header
 import com.zoho.crm.api.exception.SDKException
-import org.apache.http.entity.ContentType
 import com.zoho.crm.api.HeaderMap
+import org.apache.hc.core5.http.ClassicHttpResponse
+import org.apache.hc.core5.http.ContentType
 import org.json.JSONObject
 
 //import java.util
@@ -62,7 +63,7 @@ class CommonAPIHandler {
    * @tparam T A T containing the specified method type.
    */
   def addParam[T](paramInstance: Param[T], paramValue: Option[T]): Unit = {
-    if (paramValue.isEmpty) return
+    if (paramValue == null || paramValue.isEmpty) return
     if (this.param == null) this.param = new ParameterMap
     this.param.add(paramInstance, paramValue.get)
   }
@@ -75,7 +76,7 @@ class CommonAPIHandler {
    * @tparam T A T containing the specified method type.
    */
   def addHeader[T](headerInstance: Header[T], headerValue: Option[T]): Unit = {
-    if (headerValue.isEmpty) return
+    if (headerValue == null || headerValue.isEmpty) return
     if (this.header == null) this.header = new HeaderMap
     this.header.add(headerInstance, headerValue.get)
   }
@@ -210,27 +211,35 @@ class CommonAPIHandler {
     }
     try {
       connector.addHeader(Constants.ZOHO_SDK, System.getProperty("os.name") + "/" + System.getProperty("os.version") + "/scala-" + Constants.ZOHO_API_VERSION + "/" + util.Properties.versionNumberString + ":" + Constants.SDK_VERSION)
-      val response = connector.fireRequest(convertInstance)
-      val statusCode = response.getStatusLine.getStatusCode
-      val headerHashMap = getHeaders(response.getAllHeaders)
+      val response: ClassicHttpResponse = connector.fireRequest(convertInstance)
+      val statusCode = response.getCode
+      val headerHashMap = getHeaders(response.getHeaders)
       var isModel = false
-      val contentType = ContentType.getOrDefault(response.getEntity)
-      val mimeType = contentType.getMimeType
-      convertInstance = getConverterClassInstance(mimeType.toLowerCase)
-      val responseObject: Option[java.util.ArrayList[Any]] = convertInstance.getWrappedResponse(response, pack).asInstanceOf[Option[java.util.ArrayList[Any]]]
-      val responseObjectList : java.util.ArrayList[Any] = responseObject match {
-        case Some(list) => list
-        case None => null
-      }
-      var returnObject : Model = null
-      var responseJSON : JSONObject= null
-      if (responseObjectList != null){
-        if (responseObjectList.get(0) != null){
-          returnObject = responseObjectList.get(0).asInstanceOf[Model]
-          if (returnObject != null) if (pack.equals(returnObject.getClass.getCanonicalName) || isExpectedType(returnObject, pack)) isModel = true
-        }
-        if (responseObjectList.size() == 2 && responseObjectList.get(1) != null){
-          responseJSON = responseObjectList.get(1).asInstanceOf[JSONObject]
+      val entity = response.getEntity
+      var contentType: ContentType = null
+      var returnObject: Model = null
+      var responseJSON: JSONObject = null
+      if (entity != null && entity.getContentType != null) {
+        contentType = ContentType.parse(entity.getContentType)
+        if (contentType != null) {
+          val mimeType = contentType.getMimeType
+          convertInstance = getConverterClassInstance(mimeType.toLowerCase)
+          if(convertInstance != null) {
+            val responseObject: Option[java.util.ArrayList[Any]] = convertInstance.getWrappedResponse(response, pack)
+            val responseObjectList: java.util.ArrayList[Any] = responseObject match {
+              case Some(list) => list
+              case None => null
+            }
+            if (responseObjectList != null) {
+              if (responseObjectList.get(0) != null) {
+                returnObject = responseObjectList.get(0).asInstanceOf[Model]
+                if (returnObject != null) if (pack.equals(returnObject.getClass.getCanonicalName) || isExpectedType(returnObject, pack)) isModel = true
+              }
+              if (responseObjectList.size() == 2 && responseObjectList.get(1) != null) {
+                responseJSON = responseObjectList.get(1).asInstanceOf[JSONObject]
+              }
+            }
+          }
         }
       }
 
@@ -252,7 +261,7 @@ class CommonAPIHandler {
    * @param encodeType A String containing the API response content type.
    * @return A Converter class instance.
    */
-  def getConverterClassInstance(encodeType: String): Converter = {
+  private def getConverterClassInstance(encodeType: String): Converter = {
     encodeType match {
       case "application/json" | "application/ld+json" =>
         new JSONConverter(this)
@@ -265,7 +274,7 @@ class CommonAPIHandler {
     }
   }
 
-  def getHeaders(headers: Array[org.apache.http.Header]): mutable.HashMap[String, String] = {
+  def getHeaders(headers: Array[org.apache.hc.core5.http.Header]): mutable.HashMap[String, String] = {
     val headerHashMap = new mutable.HashMap[String, String]
     for (header <- headers) {
       headerHashMap(header.getName) = header.getValue
@@ -273,13 +282,8 @@ class CommonAPIHandler {
     headerHashMap
   }
 
-  private def isExpectedType(model: Model, className: String): Boolean = {
-    val interfaces = model.getClass.getInterfaces
-    for (interfaceDetails <- interfaces) {
-      if (interfaceDetails.getCanonicalName == className) return true
-    }
-    false
-  }
+  private def isExpectedType(model: Model, className: String): Boolean =
+    model.getClass.getInterfaces.exists(_.getCanonicalName == className)
 
   @throws[SDKException]
   private def setAPIUrl(connector: APIHTTPConnector): Unit = {

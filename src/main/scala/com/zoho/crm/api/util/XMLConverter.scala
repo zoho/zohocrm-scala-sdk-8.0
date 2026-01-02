@@ -1,6 +1,6 @@
 package com.zoho.crm.api.util
 
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase
+import org.apache.hc.core5.http.ClassicHttpRequest
 import org.json.JSONObject
 
 
@@ -9,7 +9,7 @@ import org.json.JSONObject
  */
 class XMLConverter(commonAPIHandler: CommonAPIHandler) extends Converter(commonAPIHandler) {
   @throws[Exception]
-  def appendToRequest(requestBase: HttpEntityEnclosingRequestBase, requestObject: Any): Unit = {
+  def appendToRequest(requestBase: ClassicHttpRequest, requestObject: Any): Unit = {
   }
 
   @throws[Exception]
@@ -23,7 +23,7 @@ class XMLConverter(commonAPIHandler: CommonAPIHandler) extends Converter(commonA
    * @param requestObject  An Object containing the POJO class instance.
    * @param pack           A String containing the expected method return type.
    * @param instanceNumber An Integer containing the POJO class instance list number.
-   * @return A Object representing the API request body object.
+   * @return An Object representing the API request body object.
    * @throws Exception Exception
    */
   override def formRequest(requestObject: Any, pack: String, instanceNumber: Integer, memberDetails: JSONObject): Any = None

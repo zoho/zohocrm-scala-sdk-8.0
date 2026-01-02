@@ -91,35 +91,41 @@ class DBStore(private var host: String, private var databaseName: String, privat
   @throws[SDKException]
   override def findToken(token: Token) : Token = {
     var connection: Connection = null
-    var statement: Statement = null
+    var statement: PreparedStatement = null
     var resultSet: ResultSet = null
     try {
       token match {
         case oauthToken: OAuthToken =>
           val sb = new mutable.StringBuilder
           sb.append("select * from ").append(this.tableName)
+          var param: Object = null
           if (oauthToken.getUserSignature != null) {
             val name = oauthToken.getUserSignature.getName
             if (name != null && name.nonEmpty) {
-              sb.append(" where user_name='").append(name).append("'")
+              sb.append(" where user_name = ?")
+              param = name
             }
           }
           else if (oauthToken.getAccessToken != null && Utility.areAllObjectsNull(oauthToken.getClientId, oauthToken.getClientSecret)) {
-            sb.append(" where access_token='").append(oauthToken.getAccessToken).append("'")
+            sb.append(" where access_token = ?")
+            param = oauthToken.getAccessToken
           }
           else if ((oauthToken.getRefreshToken != null || oauthToken.getGrantToken != null) && oauthToken.getClientId != null && oauthToken.getClientSecret != null) {
             if (oauthToken.getGrantToken != null && oauthToken.getGrantToken.nonEmpty) {
-              sb.append(" where grant_token='").append(oauthToken.getGrantToken).append("'")
+              sb.append(" where grant_token = ?")
+              param = oauthToken.getGrantToken
             }
             else if (oauthToken.getRefreshToken != null && oauthToken.getRefreshToken.nonEmpty) {
-              sb.append(" where refresh_token='").append(oauthToken.getRefreshToken).append("'")
+              sb.append(" where refresh_token = ?")
+              param = oauthToken.getRefreshToken
             }
           }
           sb.append(" limit 1")
           Class.forName(Constants.JDBC_DRIVER_NAME)
           connection = DriverManager.getConnection(this.connectionString, this.userName, this.password)
-          statement = connection.createStatement()
-          resultSet = statement.executeQuery(sb.toString())
+          statement = connection.prepareStatement(sb.toString())
+          statement.setString(1, param.toString)
+          resultSet = statement.executeQuery()
           while (resultSet.next()) {
             setMergeData(oauthToken, resultSet)
             return oauthToken
@@ -147,26 +153,34 @@ class DBStore(private var host: String, private var databaseName: String, privat
         case oauthToken: OAuthToken =>
           val sb = new mutable.StringBuilder
           sb.append("update ").append(this.tableName).append(" set ")
+          var param: String = null
           if (oauthToken.getUserSignature != null) {
             val name = oauthToken.getUserSignature.getName
             if (name != null && name.nonEmpty) {
-              sb.append(setToken(oauthToken)).append(" where user_name='").append(name).append("'")
+              sb.append(setToken(oauthToken)).append(" where user_name = ?")
+              param = name
             }
           }
           else if (oauthToken.getAccessToken != null && oauthToken.getAccessToken.nonEmpty && Utility.areAllObjectsNull(oauthToken.getClientId, oauthToken.getClientSecret)){
-            sb.append(setToken(oauthToken)).append(" where access_token='").append(oauthToken.getAccessToken).append("'")
+            sb.append(setToken(oauthToken)).append(" where access_token = ?")
+            param = oauthToken.getAccessToken
           }
-          else if (((oauthToken.getRefreshToken != null && oauthToken.getRefreshToken.nonEmpty) || (oauthToken.getGrantToken != null && oauthToken.getGrantToken.nonEmpty)) && oauthToken.getClientId != null && oauthToken.getClientSecret != null) if (oauthToken.getGrantToken != null && oauthToken.getGrantToken.nonEmpty) {
-            sb.append(setToken(oauthToken)).append(" where grant_token='").append(oauthToken.getGrantToken).append("'")
-          }
-          else if (oauthToken.getRefreshToken != null && oauthToken.getRefreshToken.nonEmpty) {
-            sb.append(setToken(oauthToken)).append(" where refresh_token='").append(oauthToken.getRefreshToken).append("'")
+          else if (((oauthToken.getRefreshToken != null && oauthToken.getRefreshToken.nonEmpty) || (oauthToken.getGrantToken != null && oauthToken.getGrantToken.nonEmpty)) && oauthToken.getClientId != null && oauthToken.getClientSecret != null) {
+            if (oauthToken.getGrantToken != null && oauthToken.getGrantToken.nonEmpty) {
+              sb.append(setToken(oauthToken)).append(" where grant_token = ?")
+              param = oauthToken.getGrantToken
+            }
+            else if (oauthToken.getRefreshToken != null && oauthToken.getRefreshToken.nonEmpty) {
+              sb.append(setToken(oauthToken)).append(" where refresh_token = ?")
+              param = oauthToken.getRefreshToken
+            }
           }
           sb.append(" limit 1")
           Class.forName(Constants.JDBC_DRIVER_NAME)
           connection = DriverManager.getConnection(this.connectionString, this.userName, this.password)
           var rowAffected = 0
-          statement = connection.prepareStatement(sb.append(";").toString)
+          statement = connection.prepareStatement(sb.toString)
+          statement.setString(1, param)
           rowAffected = statement.executeUpdate
           if(rowAffected == 0) {
             if (oauthToken.getId != null || oauthToken.getUserSignature != null) {
@@ -210,8 +224,9 @@ class DBStore(private var host: String, private var databaseName: String, privat
     try {
       Class.forName(Constants.JDBC_DRIVER_NAME)
       connection = DriverManager.getConnection(this.connectionString, this.userName, this.password)
-      val sb = new StringBuilder().append("delete from ").append(this.tableName).append(" where id='").append(id).append("';").toString()
+      val sb = new StringBuilder().append("delete from ").append(this.tableName).append(" where id = ?").toString()
       val statement = connection.prepareStatement(sb)
+      statement.setString(1, id)
       try statement.executeUpdate
       finally if (statement != null) statement.close()
     }
@@ -274,15 +289,16 @@ class DBStore(private var host: String, private var databaseName: String, privat
   @throws[SDKException]
   override def findTokenById(id: String): Token = {
     var connection: Connection = null
-    var statement: Statement = null
+    var statement: PreparedStatement = null
     var resultSet: ResultSet = null
     try {
       Class.forName(Constants.JDBC_DRIVER_NAME)
       connection = DriverManager.getConnection(this.connectionString, this.userName, this.password)
       val oauthToken = new OAuthToken
-      statement = connection.createStatement()
-      val query = "select * from " + this.tableName + " where id='" + id + "'"
-      resultSet = statement.executeQuery(query)
+      val query = s"select * from " + this.tableName + " where id = ?"
+      statement = connection.prepareStatement(query)
+      statement.setString(1, id)
+      resultSet = statement.executeQuery()
       while (resultSet.next()) {
         setMergeData(oauthToken, resultSet)
         return oauthToken
@@ -330,7 +346,7 @@ class DBStore(private var host: String, private var databaseName: String, privat
       query.addOne(setTokenInfo(Constants.CLIENT_ID, oauthToken.getClientId))
     }
     if (oauthToken.getClientSecret != null) {
-        query.addOne(setTokenInfo(Constants.CLIENT_SECRET, oauthToken.getClientSecret))
+      query.addOne(setTokenInfo(Constants.CLIENT_SECRET, oauthToken.getClientSecret))
     }
     if (oauthToken.getRefreshToken != null) {
       query.addOne(setTokenInfo(Constants.REFRESH_TOKEN, oauthToken.getRefreshToken))

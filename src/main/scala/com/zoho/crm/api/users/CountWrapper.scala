@@ -4,14 +4,14 @@ import com.zoho.crm.api.util.Model
 import scala.collection.mutable.HashMap
 
 class CountWrapper extends Model with CountHandler	{
-	private var count:Option[Long] = None
+	private var count:Option[Int] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
-	def getCount() :Option[Long]	={
+	def getCount() :Option[Int]	={
 		return  this.count
 	}
 
-	def setCount( count: Option[Long]) 	={
+	def setCount( count: Option[Int]) 	={
 		 this.count = count
 		 this.keyModified("count") = 1
 	}

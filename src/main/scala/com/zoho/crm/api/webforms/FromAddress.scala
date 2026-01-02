@@ -6,6 +6,8 @@ import scala.collection.mutable.HashMap
 class FromAddress extends Model	{
 	private var id:Option[String] = None
 	private var type1:Option[String] = None
+	private var apiName:Option[String] = None
+	private var email:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getId() :Option[String]	={
@@ -24,6 +26,24 @@ class FromAddress extends Model	{
 	def setType( type1: Option[String]) 	={
 		 this.type1 = type1
 		 this.keyModified("type") = 1
+	}
+
+	def getAPIName() :Option[String]	={
+		return  this.apiName
+	}
+
+	def setAPIName( apiName: Option[String]) 	={
+		 this.apiName = apiName
+		 this.keyModified("api_name") = 1
+	}
+
+	def getEmail() :Option[String]	={
+		return  this.email
+	}
+
+	def setEmail( email: Option[String]) 	={
+		 this.email = email
+		 this.keyModified("email") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

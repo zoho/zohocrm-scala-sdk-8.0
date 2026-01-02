@@ -1,14 +1,13 @@
 package com.zoho.crm.api.tags
 
 import com.zoho.crm.api.users.MinifiedUser
-import com.zoho.crm.api.util.Choice
 import com.zoho.crm.api.util.Model
 import java.time.OffsetDateTime
 import scala.collection.mutable.HashMap
 
 class Tag extends Model	{
 	private var name:Option[String] = None
-	private var colorCode:Choice[String] = _
+	private var colorCode:Option[String] = None
 	private var createdTime:Option[OffsetDateTime] = None
 	private var modifiedTime:Option[OffsetDateTime] = None
 	private var modifiedBy:Option[MinifiedUser] = None
@@ -25,11 +24,11 @@ class Tag extends Model	{
 		 this.keyModified("name") = 1
 	}
 
-	def getColorCode() :Choice[String]	={
+	def getColorCode() :Option[String]	={
 		return  this.colorCode
 	}
 
-	def setColorCode( colorCode: Choice[String]) 	={
+	def setColorCode( colorCode: Option[String]) 	={
 		 this.colorCode = colorCode
 		 this.keyModified("color_code") = 1
 	}

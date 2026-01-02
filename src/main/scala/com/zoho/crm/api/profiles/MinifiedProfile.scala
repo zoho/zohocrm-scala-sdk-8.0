@@ -6,7 +6,7 @@ import scala.collection.mutable.HashMap
 class MinifiedProfile extends Model	{
 	private var id:Option[Long] = None
 	private var name:Option[String] = None
-	private var delete:Option[Boolean] = None
+	private var delete:Option[Delete] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getId() :Option[Long]	={
@@ -27,11 +27,11 @@ class MinifiedProfile extends Model	{
 		 this.keyModified("name") = 1
 	}
 
-	def getDelete() :Option[Boolean]	={
+	def getDelete() :Option[Delete]	={
 		return  this.delete
 	}
 
-	def setDelete( delete: Option[Boolean]) 	={
+	def setDelete( delete: Option[Delete]) 	={
 		 this.delete = delete
 		 this.keyModified("_delete") = 1
 	}

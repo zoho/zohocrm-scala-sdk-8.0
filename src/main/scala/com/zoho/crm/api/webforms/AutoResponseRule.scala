@@ -4,14 +4,24 @@ import com.zoho.crm.api.util.Model
 import scala.collection.mutable.HashMap
 
 class AutoResponseRule extends Model	{
-	private var id:Option[Long] = None
+	private var name:Option[String] = None
+	private var id:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
-	def getId() :Option[Long]	={
+	def getName() :Option[String]	={
+		return  this.name
+	}
+
+	def setName( name: Option[String]) 	={
+		 this.name = name
+		 this.keyModified("name") = 1
+	}
+
+	def getId() :Option[String]	={
 		return  this.id
 	}
 
-	def setId( id: Option[Long]) 	={
+	def setId( id: Option[String]) 	={
 		 this.id = id
 		 this.keyModified("id") = 1
 	}

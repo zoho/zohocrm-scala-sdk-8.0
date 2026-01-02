@@ -3,10 +3,8 @@ package com.zoho.crm.api.util
 import com.zoho.crm.api.Initializer
 import com.zoho.crm.api.exception.SDKException
 import com.zoho.crm.api.record.Record
-import org.apache.http.HttpResponse
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase
-import org.apache.http.entity.StringEntity
-import org.apache.http.util.EntityUtils
+import org.apache.hc.core5.http.{ClassicHttpRequest, ClassicHttpResponse}
+import org.apache.hc.core5.http.io.entity.{EntityUtils, StringEntity}
 import org.json.{JSONArray, JSONException, JSONObject}
 
 import java.io.File
@@ -14,13 +12,13 @@ import java.lang.reflect.{Constructor, InvocationTargetException, Modifier}
 import java.nio.charset.StandardCharsets
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
-import scala.util.control.Breaks._
+import scala.util.control.Breaks.*
 
 class JSONConverter(commonAPIHandler: CommonAPIHandler) extends Converter(commonAPIHandler) {
 
   private val uniqueValuesHashMap: mutable.HashMap[String, ArrayBuffer[Any]] = mutable.HashMap()
 
-  override def appendToRequest(requestBase: HttpEntityEnclosingRequestBase, requestObject: Any): Unit = {
+  override def appendToRequest(requestBase: ClassicHttpRequest, requestObject: Any): Unit = {
     requestBase.setEntity(new StringEntity(requestObject.toString, StandardCharsets.UTF_8))
   }
 
@@ -103,11 +101,11 @@ class JSONConverter(commonAPIHandler: CommonAPIHandler) extends Converter(common
               }
               if(keyName.equalsIgnoreCase(Constants.BODY) && this.commonAPIHandler.getAPIPath.endsWith(Constants.FUNCTIONS_PATH) && this.commonAPIHandler.getAPIPath.contains(Constants.FUNCTIONS))
               {
-                return this.setData(memberDetail, fieldValue).asInstanceOf[JSONObject];
+                return this.setData(memberDetail, fieldValue).asInstanceOf[JSONObject]
               }
               else
               {
-                requestJSON.put(keyName, setData(memberDetail, fieldValue));
+                requestJSON.put(keyName, setData(memberDetail, fieldValue))
               }
             }
           }
@@ -227,12 +225,20 @@ class JSONConverter(commonAPIHandler: CommonAPIHandler) extends Converter(common
     for (keyName <- keyModified.keySet) {
       if (keyModified(keyName) == 1) {
         var keyDetail = new JSONObject
-        var keyValue: Any = None
-        keyValue = if (keyValues.contains(keyName)) {
+        var keyValue: Any = null
+        if (keyValues.contains(keyName)) {
           if (keyValues(keyName) != None && keyValues(keyName) != null) {
-            keyValue = keyValues(keyName)
-            if (keyValue.isInstanceOf[Option[_]]) keyValue.asInstanceOf[Some[_]].getOrElse(None)
-            else keyValue
+            keyValue = keyValues.get(keyName)
+            keyValue match {
+              case _: Option[_] =>
+                keyValue = keyValue.asInstanceOf[Some[_]].getOrElse(None)
+              case _ =>
+            }
+            keyValue match {
+              case some: Some[_] =>
+                keyValue = some.get
+              case _ =>
+            }
           }
         }
         var jsonValue: Any = null
@@ -427,9 +433,9 @@ class JSONConverter(commonAPIHandler: CommonAPIHandler) extends Converter(common
   }
 
   override def getWrappedResponse(response: Any, pack: String): Option[java.util.ArrayList[Any]] = {
-    val responseEntity = response.asInstanceOf[HttpResponse].getEntity
+    val responseEntity = response.asInstanceOf[ClassicHttpResponse].getEntity
     if (responseEntity != null) {
-      var responseArray = new java.util.ArrayList[Any]()
+      val responseArray = new java.util.ArrayList[Any]()
       val responseObject = EntityUtils.toString(responseEntity)
       responseArray.add(getResponse(responseObject, pack))
       responseArray.add(getJSON(responseObject))
@@ -439,14 +445,13 @@ class JSONConverter(commonAPIHandler: CommonAPIHandler) extends Converter(common
   }
 
   def getJSON(response: Any): JSONObject = {
-    var responseString = response.toString
+    val responseString = response.toString
     if (responseString == null || responseString.equals("null") || responseString.isEmpty || responseString.trim().isEmpty || responseString.equals("{}")) {
       null
     }
     else{
-      new JSONObject(responseString);
+      new JSONObject(responseString)
     }
-
   }
 
   @throws[InstantiationException]
@@ -521,9 +526,12 @@ class JSONConverter(commonAPIHandler: CommonAPIHandler) extends Converter(common
       moduleDetail.put(key, classDetail.get(key))
     }
     val recordDetail = Initializer.jsonDetails.getJSONObject(Constants.RECORD_NAMESPACE)
-    var cl = recordInstance.getClass
-    val scl = cl.getSuperclass
-    if (scl.getCanonicalName == Constants.RECORD_NAMESPACE) cl = scl
+    var cl: Class[_] = recordInstance.getClass
+    val scl: Class[_] = cl.getSuperclass
+    if (scl != null && scl.getCanonicalName == Constants.RECORD_NAMESPACE) {
+      cl = scl
+    }
+    
     val member = cl.getDeclaredField(Constants.KEY_VALUES)
     member.setAccessible(true)
     val keyValues: mutable.HashMap[String, Any] = mutable.HashMap()
@@ -571,7 +579,11 @@ class JSONConverter(commonAPIHandler: CommonAPIHandler) extends Converter(common
     var memberValue: Any = null
     if (`type`.equalsIgnoreCase(Constants.LIST_NAMESPACE)) memberValue = getCollectionsData(keyData.asInstanceOf[JSONArray], memberDetail)
     else if (`type`.equalsIgnoreCase(Constants.MAP_NAMESPACE)) memberValue = getHashMapData(keyData.asInstanceOf[JSONObject], memberDetail)
-    else if (`type`.equalsIgnoreCase(Constants.CHOICE_NAMESPACE) || (memberDetail.has(Constants.STRUCTURE_NAME) && memberDetail.getString(Constants.STRUCTURE_NAME).equals(Constants.CHOICE_NAMESPACE))) memberValue = Class.forName(`type`).getConstructors()(0).newInstance(keyData)
+    else if (`type`.equalsIgnoreCase(Constants.CHOICE_NAMESPACE) || (memberDetail.has(Constants.STRUCTURE_NAME) && memberDetail.getString(Constants.STRUCTURE_NAME).equals(Constants.CHOICE_NAMESPACE))) {
+      val clazz = Class.forName(`type`)
+      val ctor = clazz.getConstructor(classOf[Object])
+      memberValue = ctor.newInstance(keyData.asInstanceOf[Object])
+    }
     else if (memberDetail.has(Constants.STRUCTURE_NAME) && memberDetail.has(Constants.MODULE.toLowerCase)) memberValue = isRecordResponse(keyData.asInstanceOf[JSONObject], getModuleDetailFromUserSpecJSON(memberDetail.getString(Constants.MODULE.toLowerCase)), memberDetail.getString(Constants.STRUCTURE_NAME))
     else if (memberDetail.has(Constants.STRUCTURE_NAME)) memberValue = getResponse(keyData, memberDetail.getString(Constants.STRUCTURE_NAME))
     else memberValue = DataTypeConverter.preConvert(keyData, `type`)
@@ -781,7 +793,7 @@ class JSONConverter(commonAPIHandler: CommonAPIHandler) extends Converter(common
     matches / totalPoints
   }
 
-  def buildName(memberName: String): String = {
+  private def buildName(memberName: String): String = {
     val name = memberName.toLowerCase().split("_")
     var sdkName = ""
     var index = 0

@@ -13,7 +13,7 @@ class Profile extends Model	{
 	private var description:Option[String] = None
 	private var id:Option[Long] = None
 	private var default1:Option[Boolean] = None
-	private var delete:Option[Boolean] = None
+	private var delete:Option[Delete] = None
 	private var permissionType:Option[String] = None
 	private var custom:Option[Boolean] = None
 	private var displayLabel:Option[String] = None
@@ -72,11 +72,11 @@ class Profile extends Model	{
 		 this.keyModified("default") = 1
 	}
 
-	def getDelete() :Option[Boolean]	={
+	def getDelete() :Option[Delete]	={
 		return  this.delete
 	}
 
-	def setDelete( delete: Option[Boolean]) 	={
+	def setDelete( delete: Option[Delete]) 	={
 		 this.delete = delete
 		 this.keyModified("_delete") = 1
 	}

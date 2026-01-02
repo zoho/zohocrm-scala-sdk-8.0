@@ -155,8 +155,8 @@ class FileStore(private var filePath: String) extends TokenStore {
       allContents.foreach(writer.write)
       writer.flush()
       if (!isRowPresent) {
-				throw new SDKException(Constants.TOKEN_STORE, Constants.TOKEN_BY_ID_FILE_ERROR)
-			}
+        throw new SDKException(Constants.TOKEN_STORE, Constants.TOKEN_BY_ID_FILE_ERROR)
+      }
     }
     catch {
       case e: Exception =>
@@ -230,8 +230,8 @@ class FileStore(private var filePath: String) extends TokenStore {
         }
       }
       if (!isRowPresent) {
-				throw new SDKException(Constants.TOKEN_STORE, Constants.TOKEN_BY_ID_FILE_ERROR)
-			}
+        throw new SDKException(Constants.TOKEN_STORE, Constants.TOKEN_BY_ID_FILE_ERROR)
+      }
     } catch {
       case e: Exception =>
         throw new SDKException(Constants.TOKEN_STORE, Constants.GET_TOKEN_FILE_ERROR, e)

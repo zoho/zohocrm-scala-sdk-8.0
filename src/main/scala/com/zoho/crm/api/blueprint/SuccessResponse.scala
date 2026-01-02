@@ -4,7 +4,7 @@ import com.zoho.crm.api.util.Choice
 import com.zoho.crm.api.util.Model
 import scala.collection.mutable.HashMap
 
-class SuccessResponse extends Model with ActionHandler	{
+class SuccessResponse extends Model with ActionResponse with ActionHandler	{
 	private var status:Choice[String] = _
 	private var code:Choice[String] = _
 	private var message:Choice[String] = _

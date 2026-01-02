@@ -5,14 +5,13 @@ import com.zoho.api.logger.SDKLogger
 import com.zoho.crm.api.dc.DataCenter
 import com.zoho.crm.api.exception.SDKException
 import com.zoho.crm.api.util.{APIHTTPConnector, Constants, Utility}
-import com.zoho.crm.api.{Initializer, SDKConfig, UserSignature}
-import org.apache.http.NameValuePair
-import org.apache.http.client.entity.UrlEncodedFormEntity
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.conn.ssl.{NoopHostnameVerifier, SSLConnectionSocketFactory}
-import org.apache.http.impl.client.{CloseableHttpClient, HttpClientBuilder}
-import org.apache.http.message.BasicNameValuePair
-import org.apache.http.util.EntityUtils
+import com.zoho.crm.api.{Initializer, UserSignature}
+import org.apache.hc.client5.http.classic.methods.HttpPost
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity
+import org.apache.hc.client5.http.impl.classic.{BasicHttpClientResponseHandler, CloseableHttpClient, HttpClientBuilder, HttpClients}
+import org.apache.hc.core5.http.NameValuePair
+import org.apache.hc.core5.http.io.entity.EntityUtils
+import org.apache.hc.core5.http.message.BasicNameValuePair
 import org.json.{JSONException, JSONObject}
 
 import java.io.IOException
@@ -26,7 +25,7 @@ import scala.collection.mutable
  * This object contains OAuthToken
  */
 object OAuthToken {
-  class Builder() {
+  class Builder {
     private var clientID: String = _
     private var clientSecret: String = _
     private var redirectURL: String = _
@@ -394,8 +393,8 @@ class OAuthToken(private var clientID: String, private var clientSecret: String,
         }
         post.setEntity(new UrlEncodedFormEntity(urlParameters))
         LOGGER.log(Level.INFO, this.toString(url))
-        val response = EntityUtils.toString(client.execute(post).getEntity)
-        return response
+        val handler = new BasicHttpClientResponseHandler()
+        return client.execute(post, handler)
       }
     }
     catch {
@@ -405,18 +404,10 @@ class OAuthToken(private var clientID: String, private var clientSecret: String,
     null
   }
 
-  def toString(url: String): String = {
-    val requestStringBuilder = new StringBuilder()
-		requestStringBuilder.append("POST - ")
-		requestStringBuilder.append(Constants.URL).append(" = ").append(url).append(".")
-    requestStringBuilder.toString()
-	}
+  def toString(url: String): String = new StringBuilder("POST - ").append(Constants.URL).append(" = ").append(url).append(".").toString()
 
   private def getHttpClient: CloseableHttpClient = {
-    val httpClientBuilder: HttpClientBuilder = HttpClientBuilder.create()
-    val sslContext: SSLContext = SSLContext.getDefault
-    val sslConnectionSocketFactory: SSLConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE)
-    httpClientBuilder.setSSLSocketFactory(sslConnectionSocketFactory).build()
+    HttpClients.createSystem()
   }
 
   private def refreshAccessToken(oauthToken: OAuthToken, url: String): OAuthToken = {
@@ -431,7 +422,6 @@ class OAuthToken(private var clientID: String, private var clientSecret: String,
     catch {
       case e: SDKException => throw e
       case e: Exception =>
-
         throw new SDKException(Constants.SAVE_TOKEN_ERROR, e)
     }
     oauthToken
@@ -502,13 +492,13 @@ class OAuthToken(private var clientID: String, private var clientSecret: String,
   }
 
   private def getTokenExpiryTime(responseJO: JSONObject): java.lang.Long = {
-    System.currentTimeMillis() +
-      (if (responseJO.has(Constants.EXPIRES_IN_SEC)) {
-        responseJO.getLong(Constants.EXPIRES_IN)
-      }
-      else {
-        responseJO.getInt(Constants.EXPIRES_IN) * 1000
-      })
+    val currentTime = System.currentTimeMillis()
+    val expiryOffset = if (responseJO.has(Constants.EXPIRES_IN_SEC)) {
+      responseJO.getLong(Constants.EXPIRES_IN)
+    } else {
+      responseJO.getInt(Constants.EXPIRES_IN).toLong * 1000L
+    }
+    currentTime + expiryOffset
   }
 
   /**

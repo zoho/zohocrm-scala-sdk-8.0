@@ -1,11 +1,11 @@
-package com.zoho.crm.api.webforms
+package com.zoho.crm.api.record
 
 import com.zoho.crm.api.util.Model
 import scala.collection.mutable.HashMap
 
-class User extends Model	{
+class SkipFeatureExecution extends Model	{
 	private var name:Option[String] = None
-	private var id:Option[String] = None
+	private var action:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getName() :Option[String]	={
@@ -17,13 +17,13 @@ class User extends Model	{
 		 this.keyModified("name") = 1
 	}
 
-	def getId() :Option[String]	={
-		return  this.id
+	def getAction() :Option[String]	={
+		return  this.action
 	}
 
-	def setId( id: Option[String]) 	={
-		 this.id = id
-		 this.keyModified("id") = 1
+	def setAction( action: Option[String]) 	={
+		 this.action = action
+		 this.keyModified("action") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

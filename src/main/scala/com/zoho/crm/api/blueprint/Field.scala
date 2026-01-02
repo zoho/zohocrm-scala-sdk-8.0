@@ -29,7 +29,7 @@ class Field extends Model	{
 	private var fieldReadOnly:Option[Boolean] = None
 	private var content:Option[String] = None
 	private var displayLabel:Option[String] = None
-	private var validationRule:Option[String] = None
+	private var validationRule:Any = None
 	private var readOnly:Option[Boolean] = None
 	private var associationDetails:Option[AssociationDetails] = None
 	private var multiModuleLookup:Option[MultiModuleLookup] = None
@@ -221,11 +221,11 @@ class Field extends Model	{
 		 this.keyModified("display_label") = 1
 	}
 
-	def getValidationRule() :Option[String]	={
+	def getValidationRule() :Any	={
 		return  this.validationRule
 	}
 
-	def setValidationRule( validationRule: Option[String]) 	={
+	def setValidationRule( validationRule: Any) 	={
 		 this.validationRule = validationRule
 		 this.keyModified("validation_rule") = 1
 	}

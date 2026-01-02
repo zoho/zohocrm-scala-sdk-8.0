@@ -6,7 +6,7 @@ import scala.collection.mutable.HashMap
 class Private extends Model	{
 	private var restricted:Option[Boolean] = None
 	private var type1:Option[String] = None
-	private var export:Option[Boolean] = None
+	private var export1:Option[Boolean] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getRestricted() :Option[Boolean]	={
@@ -28,11 +28,11 @@ class Private extends Model	{
 	}
 
 	def getExport() :Option[Boolean]	={
-		return  this.export
+		return  this.export1
 	}
 
-	def setExport( export: Option[Boolean]) 	={
-		 this.export = export
+	def setExport( export1: Option[Boolean]) 	={
+		 this.export1 = export1
 		 this.keyModified("export") = 1
 	}
 

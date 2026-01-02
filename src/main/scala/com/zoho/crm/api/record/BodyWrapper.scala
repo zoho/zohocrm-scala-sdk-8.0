@@ -11,6 +11,10 @@ class BodyWrapper extends Model	{
 	private var duplicateCheckFields:ArrayBuffer[String] = _
 	private var wfTrigger:Option[String] = None
 	private var larId:Option[String] = None
+	private var applyFeatureExecution:ArrayBuffer[ApplyFeatureExecution] = _
+	private var applyValidationRule:Option[String] = None
+	private var applyFunctionValidationRule:Option[String] = None
+	private var skipFeatureExecution:ArrayBuffer[SkipFeatureExecution] = _
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getData() :ArrayBuffer[Record]	={
@@ -65,6 +69,42 @@ class BodyWrapper extends Model	{
 	def setLarId( larId: Option[String]) 	={
 		 this.larId = larId
 		 this.keyModified("lar_id") = 1
+	}
+
+	def getApplyFeatureExecution() :ArrayBuffer[ApplyFeatureExecution]	={
+		return  this.applyFeatureExecution
+	}
+
+	def setApplyFeatureExecution( applyFeatureExecution: ArrayBuffer[ApplyFeatureExecution]) 	={
+		 this.applyFeatureExecution = applyFeatureExecution
+		 this.keyModified("apply_feature_execution") = 1
+	}
+
+	def getApplyValidationRule() :Option[String]	={
+		return  this.applyValidationRule
+	}
+
+	def setApplyValidationRule( applyValidationRule: Option[String]) 	={
+		 this.applyValidationRule = applyValidationRule
+		 this.keyModified("apply_validation_rule") = 1
+	}
+
+	def getApplyFunctionValidationRule() :Option[String]	={
+		return  this.applyFunctionValidationRule
+	}
+
+	def setApplyFunctionValidationRule( applyFunctionValidationRule: Option[String]) 	={
+		 this.applyFunctionValidationRule = applyFunctionValidationRule
+		 this.keyModified("apply_function_validation_rule") = 1
+	}
+
+	def getSkipFeatureExecution() :ArrayBuffer[SkipFeatureExecution]	={
+		return  this.skipFeatureExecution
+	}
+
+	def setSkipFeatureExecution( skipFeatureExecution: ArrayBuffer[SkipFeatureExecution]) 	={
+		 this.skipFeatureExecution = skipFeatureExecution
+		 this.keyModified("skip_feature_execution") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

@@ -6,7 +6,6 @@ import com.zoho.crm.api.Param
 import com.zoho.crm.api.ParameterMap
 import com.zoho.crm.api.exception.SDKException
 import com.zoho.crm.api.util.APIResponse
-import com.zoho.crm.api.util.Choice
 import com.zoho.crm.api.util.CommonAPIHandler
 import java.time.OffsetDateTime
 import com.zoho.crm.api.util.Constants
@@ -112,7 +111,7 @@ class UsersOperations	{
 	}}
  object UsersOperations{
 class GetUsersParam		{
-		final val type1:Param[Choice[String]] = new Param[Choice[String]]("type", "com.zoho.crm.api.Users.GetUsersParam")
+		final val type1:Param[String] = new Param[String]("type", "com.zoho.crm.api.Users.GetUsersParam")
 		final val page:Param[Int] = new Param[Int]("page", "com.zoho.crm.api.Users.GetUsersParam")
 		final val perPage:Param[Int] = new Param[Int]("per_page", "com.zoho.crm.api.Users.GetUsersParam")
 		final val ids:Param[String] = new Param[String]("ids", "com.zoho.crm.api.Users.GetUsersParam")
@@ -135,6 +134,6 @@ class GetAssociatedGroupsParam		{
 
 
 class UsersCountParam		{
-		final val type1:Param[Choice[String]] = new Param[Choice[String]]("type", "com.zoho.crm.api.Users.UsersCountParam")
+		final val type1:Param[String] = new Param[String]("type", "com.zoho.crm.api.Users.UsersCountParam")
 	}
 }

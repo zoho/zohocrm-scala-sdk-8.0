@@ -3,9 +3,10 @@ package com.zoho.crm.api.webforms
 import com.zoho.crm.api.util.Model
 import scala.collection.mutable.HashMap
 
-class SpamControll extends Model	{
+class SpamControl extends Model	{
 	private var status:Option[String] = None
 	private var excludeScore:Option[String] = None
+	private var spamPossibilityThreshold:Option[Int] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getStatus() :Option[String]	={
@@ -24,6 +25,15 @@ class SpamControll extends Model	{
 	def setExcludeScore( excludeScore: Option[String]) 	={
 		 this.excludeScore = excludeScore
 		 this.keyModified("exclude_score") = 1
+	}
+
+	def getSpamPossibilityThreshold() :Option[Int]	={
+		return  this.spamPossibilityThreshold
+	}
+
+	def setSpamPossibilityThreshold( spamPossibilityThreshold: Option[Int]) 	={
+		 this.spamPossibilityThreshold = spamPossibilityThreshold
+		 this.keyModified("spam_possibility_threshold") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

@@ -10,7 +10,7 @@ import java.time.OffsetDateTime
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.ArrayBuffer
 
-class EmailTemplate extends InventoryTemplates with Model with Template	{
+class EmailTemplate extends InventoryTemplates with Template with Model	{
 	private var attachments:ArrayBuffer[Attachment] = _
 	private var subject:Option[String] = None
 	private var associated:Option[Boolean] = None

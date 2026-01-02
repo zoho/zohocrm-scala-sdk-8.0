@@ -1,20 +1,19 @@
-package com.zoho.crm.api.users
+package com.zoho.crm.api.profiles
 
 import com.zoho.crm.api.util.Model
 import scala.collection.mutable.HashMap
-import scala.collection.mutable.ArrayBuffer
 
-class ActionWrapper extends Model with ActionHandler	{
-	private var users:ArrayBuffer[ActionResponse] = _
+class Delete extends Model	{
+	private var permanent:Option[Boolean] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
-	def getUsers() :ArrayBuffer[ActionResponse]	={
-		return  this.users
+	def getPermanent() :Option[Boolean]	={
+		return  this.permanent
 	}
 
-	def setUsers( users: ArrayBuffer[ActionResponse]) 	={
-		 this.users = users
-		 this.keyModified("users") = 1
+	def setPermanent( permanent: Option[Boolean]) 	={
+		 this.permanent = permanent
+		 this.keyModified("permanent") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

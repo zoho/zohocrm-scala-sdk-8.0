@@ -33,21 +33,7 @@ class WebformsOperations(var module: Option[String]=None)	{
 		return handlerInstance.apiCall(classOf[ActionHandler], "application/json")
 	}
 
-	def updateWebForms( request: BodyWrapper) :Option[APIResponse[ActionHandler]]	={
-		var handlerInstance :CommonAPIHandler = new CommonAPIHandler()
-		var apiPath :String = new String()
-		apiPath = apiPath.concat("/crm/v8/settings/webforms")
-		handlerInstance.setAPIPath(apiPath)
-		handlerInstance.setHttpMethod(Constants.REQUEST_METHOD_PUT)
-		handlerInstance.setCategoryMethod("UPDATE")
-		handlerInstance.setContentType("application/json")
-		handlerInstance.setRequest(request)
-		handlerInstance.setMandatoryChecker(true)
-		handlerInstance.addParam(new Param[String]("module", "com.zoho.crm.api.Webforms.UpdateWebFormsParam"),  this.module)
-		return handlerInstance.apiCall(classOf[ActionHandler], "application/json")
-	}
-
-	def getWebForm( formId: Long) :Option[APIResponse[ResponseHandler]]	={
+	def getWebForm( formId: String) :Option[APIResponse[ResponseHandler]]	={
 		var handlerInstance :CommonAPIHandler = new CommonAPIHandler()
 		var apiPath :String = new String()
 		apiPath = apiPath.concat("/crm/v8/settings/webforms/")
@@ -59,7 +45,7 @@ class WebformsOperations(var module: Option[String]=None)	{
 		return handlerInstance.apiCall(classOf[ResponseHandler], "application/json")
 	}
 
-	def updateWebForm( formId: Long,  request: BodyWrapper) :Option[APIResponse[ActionHandler]]	={
+	def updateWebForm( formId: String,  request: BodyWrapper) :Option[APIResponse[ActionHandler]]	={
 		var handlerInstance :CommonAPIHandler = new CommonAPIHandler()
 		var apiPath :String = new String()
 		apiPath = apiPath.concat("/crm/v8/settings/webforms/")
@@ -74,7 +60,7 @@ class WebformsOperations(var module: Option[String]=None)	{
 		return handlerInstance.apiCall(classOf[ActionHandler], "application/json")
 	}
 
-	def deleteWebForms( formId: Long) :Option[APIResponse[ActionHandler]]	={
+	def deleteWebForms( formId: String) :Option[APIResponse[ActionHandler]]	={
 		var handlerInstance :CommonAPIHandler = new CommonAPIHandler()
 		var apiPath :String = new String()
 		apiPath = apiPath.concat("/crm/v8/settings/webforms/")
@@ -86,7 +72,7 @@ class WebformsOperations(var module: Option[String]=None)	{
 		return handlerInstance.apiCall(classOf[ActionHandler], "application/json")
 	}
 
-	def getWebformsPreview( formId: Long) :Option[APIResponse[ResponseHandler]]	={
+	def getWebformsPreview( formId: String) :Option[APIResponse[ResponseHandler]]	={
 		var handlerInstance :CommonAPIHandler = new CommonAPIHandler()
 		var apiPath :String = new String()
 		apiPath = apiPath.concat("/crm/v8/settings/webforms/")
@@ -104,10 +90,6 @@ class GetWebFormsParam		{
 
 
 class CreateWebFormsParam		{
-	}
-
-
-class UpdateWebFormsParam		{
 	}
 
 

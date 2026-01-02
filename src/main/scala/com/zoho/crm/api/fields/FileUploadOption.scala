@@ -3,7 +3,7 @@ package com.zoho.crm.api.fields
 import com.zoho.crm.api.util.Model
 import scala.collection.mutable.HashMap
 
-class FileUpoladOption extends Model	{
+class FileUploadOption extends Model	{
 	private var actualValue:Option[String] = None
 	private var displayValue:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()

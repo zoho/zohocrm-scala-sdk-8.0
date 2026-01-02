@@ -6,7 +6,6 @@ import com.zoho.crm.api.Param
 import com.zoho.crm.api.ParameterMap
 import com.zoho.crm.api.exception.SDKException
 import com.zoho.crm.api.util.APIResponse
-import com.zoho.crm.api.util.Choice
 import com.zoho.crm.api.util.CommonAPIHandler
 import java.time.OffsetDateTime
 import com.zoho.crm.api.util.Constants
@@ -87,7 +86,7 @@ class ModulesOperations	{
 	}}
  object ModulesOperations{
 class GetModulesParam		{
-		final val status:Param[Choice[String]] = new Param[Choice[String]]("status", "com.zoho.crm.api.Modules.GetModulesParam")
+		final val status:Param[String] = new Param[String]("status", "com.zoho.crm.api.Modules.GetModulesParam")
 	}
 
 

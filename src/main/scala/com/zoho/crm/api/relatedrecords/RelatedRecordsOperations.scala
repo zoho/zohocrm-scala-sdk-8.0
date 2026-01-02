@@ -266,6 +266,7 @@ class GetRelatedRecordsParam		{
 		final val page:Param[Int] = new Param[Int]("page", "com.zoho.crm.api.RelatedRecords.GetRelatedRecordsParam")
 		final val perPage:Param[Int] = new Param[Int]("per_page", "com.zoho.crm.api.RelatedRecords.GetRelatedRecordsParam")
 		final val fields:Param[String] = new Param[String]("fields", "com.zoho.crm.api.RelatedRecords.GetRelatedRecordsParam")
+		final val ids:Param[String] = new Param[String]("ids", "com.zoho.crm.api.RelatedRecords.GetRelatedRecordsParam")
 	}
 
 
@@ -294,6 +295,7 @@ class GetRelatedRecordsUsingExternalIDParam		{
 		final val page:Param[Int] = new Param[Int]("page", "com.zoho.crm.api.RelatedRecords.GetRelatedRecordsUsingExternalIDParam")
 		final val perPage:Param[Int] = new Param[Int]("per_page", "com.zoho.crm.api.RelatedRecords.GetRelatedRecordsUsingExternalIDParam")
 		final val fields:Param[String] = new Param[String]("fields", "com.zoho.crm.api.RelatedRecords.GetRelatedRecordsUsingExternalIDParam")
+		final val ids:Param[String] = new Param[String]("ids", "com.zoho.crm.api.RelatedRecords.GetRelatedRecordsUsingExternalIDParam")
 	}
 
 

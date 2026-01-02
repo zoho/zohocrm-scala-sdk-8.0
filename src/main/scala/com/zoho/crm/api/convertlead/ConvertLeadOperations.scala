@@ -19,7 +19,6 @@ class ConvertLeadOperations(var leadId: Long)	{
 		handlerInstance.setCategoryMethod("CREATE")
 		handlerInstance.setContentType("application/json")
 		handlerInstance.setRequest(request)
-		handlerInstance.setMandatoryChecker(true)
 		handlerInstance.setModuleAPIName("Deals")
 		Utility.getFields("Deals", handlerInstance)
 		return handlerInstance.apiCall(classOf[ActionHandler], "application/json")

@@ -3,7 +3,7 @@ package com.zoho.crm.api.util
 import com.zoho.api.authenticator.OAuthToken
 import com.zoho.crm.api.Initializer
 import com.zoho.crm.api.exception.SDKException
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase
+import org.apache.hc.core5.http.ClassicHttpRequest
 import org.json.{JSONArray, JSONObject}
 
 import java.io.UnsupportedEncodingException
@@ -11,6 +11,7 @@ import java.util.{Base64, TimeZone}
 import java.util.regex.Pattern
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
+import scala.runtime.BoxedUnit
 import scala.util.control.Breaks.{break, breakable}
 
 object Converter {
@@ -49,19 +50,19 @@ abstract class Converter(protected var commonAPIHandler: CommonAPIHandler = null
   /**
    * This abstract method is to construct the API request body.
    *
-   * @param requestBase   A HttpEntityEnclosingRequestBase class instance.
+   * @param requestBase   A ClassicHttpRequest class instance.
    * @param requestObject A Object containing the API request body object.
    * @throws Exception Exception
    */
   @throws[Exception]
-  def appendToRequest(requestBase: HttpEntityEnclosingRequestBase, requestObject: Any): Unit
+  def appendToRequest(requestBase: ClassicHttpRequest, requestObject: Any): Unit
 
   /**
    * This abstract method is to process the API response.
    *
-   * @param response A Object containing the HttpResponse class instance.
+   * @param response An Object containing the HttpResponse class instance.
    * @param pack     A String containing the expected method return type.
-   * @return A Array representing the class instance and responseJSON.
+   * @return An Array representing the class instance and responseJSON.
    * @throws Exception Exception
    */
   @throws[Exception]
@@ -83,7 +84,7 @@ abstract class Converter(protected var commonAPIHandler: CommonAPIHandler = null
     val detailsJO = new JSONObject
     val name = keyDetails.getString(Constants.NAME)
     var `type` = keyDetails.getString(Constants.TYPE)
-    var value1: Any = value
+    val value1: Any = value
     var varType: String = ""
     var check: Boolean = true
 
@@ -102,7 +103,16 @@ abstract class Converter(protected var commonAPIHandler: CommonAPIHandler = null
       else {
         varType = value1.getClass.getCanonicalName
         check = varType.equalsIgnoreCase(`type`)
-        if (!check) if (value.isInstanceOf[TimeZone] && `type`.equalsIgnoreCase(Constants.TIME_ZONE)) check = true
+
+        if (!check) {
+          value match {
+            case _: TimeZone if `type`.equalsIgnoreCase(Constants.TIME_ZONE) =>
+              check = true
+//            case _: BoxedUnit if `type`.equalsIgnoreCase(Constants.LONG_NAMESPACE) =>
+//              check = true
+            case _ =>
+          }
+        }
       }
     }
     value1 match {
@@ -192,9 +202,9 @@ abstract class Converter(protected var commonAPIHandler: CommonAPIHandler = null
 
   @throws[Exception]
   def checkChoiceValue(className: String, keyDetails: JSONObject, value: Any): Unit = {
-    var name = keyDetails.optString(Constants.NAME)
+    val name = keyDetails.optString(Constants.NAME)
     if (keyDetails.has(Constants.VALUES) && name != null && Initializer.getInitializer.getSDKConfig.getPickListValidation){
-      var valuesJA = keyDetails.getJSONArray(Constants.VALUES)
+      val valuesJA = keyDetails.getJSONArray(Constants.VALUES)
       val pickListValue = new ArrayBuffer[Any]()
       valuesJA.forEach(value => {
         pickListValue.addOne(value)

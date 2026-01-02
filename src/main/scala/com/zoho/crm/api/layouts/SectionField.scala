@@ -8,7 +8,7 @@ import com.zoho.crm.api.fields.Currency
 import com.zoho.crm.api.fields.EmailParser
 import com.zoho.crm.api.fields.External
 import com.zoho.crm.api.fields.Fields
-import com.zoho.crm.api.fields.FileUpoladOption
+import com.zoho.crm.api.fields.FileUploadOption
 import com.zoho.crm.api.fields.Formula
 import com.zoho.crm.api.fields.HipaaCompliance
 import com.zoho.crm.api.fields.HistoryTracking
@@ -48,7 +48,7 @@ class SectionField extends Fields with Model	{
 	private var multiModuleLookup:Option[MultiModuleLookup] = None
 	private var sharingProperties:Option[SharingProperties] = None
 	private var currency:Option[Currency] = None
-	private var fileUpoladOptionlist:ArrayBuffer[FileUpoladOption] = _
+	private var fileUploadOptionlist:ArrayBuffer[FileUploadOption] = _
 	private var lookup:Option[Lookup] = None
 	private var subform:Option[Subform] = None
 	private var formula:Option[Formula] = None
@@ -230,13 +230,13 @@ class SectionField extends Fields with Model	{
 		 this.keyModified("currency") = 1
 	}
 
-	override def getFileUpoladOptionlist() :ArrayBuffer[FileUpoladOption]	={
-		return  this.fileUpoladOptionlist
+	override def getFileUploadOptionlist() :ArrayBuffer[FileUploadOption]	={
+		return  this.fileUploadOptionlist
 	}
 
-	override def setFileUpoladOptionlist( fileUpoladOptionlist: ArrayBuffer[FileUpoladOption]) 	={
-		 this.fileUpoladOptionlist = fileUpoladOptionlist
-		 this.keyModified("file_upolad_optionlist") = 1
+	override def setFileUploadOptionlist( fileUploadOptionlist: ArrayBuffer[FileUploadOption]) 	={
+		 this.fileUploadOptionlist = fileUploadOptionlist
+		 this.keyModified("file_upload_optionlist") = 1
 	}
 
 	override def getLookup() :Option[Lookup]	={

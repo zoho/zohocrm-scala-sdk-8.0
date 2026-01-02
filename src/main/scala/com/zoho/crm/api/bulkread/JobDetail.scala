@@ -14,7 +14,7 @@ class JobDetail extends Model	{
 	private var createdBy:Option[MinifiedUser] = None
 	private var createdTime:Option[OffsetDateTime] = None
 	private var result:Option[Result] = None
-	private var fileType:Choice[String] = _
+	private var fileType:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getId() :Option[String]	={
@@ -80,11 +80,11 @@ class JobDetail extends Model	{
 		 this.keyModified("result") = 1
 	}
 
-	def getFileType() :Choice[String]	={
+	def getFileType() :Option[String]	={
 		return  this.fileType
 	}
 
-	def setFileType( fileType: Choice[String]) 	={
+	def setFileType( fileType: Option[String]) 	={
 		 this.fileType = fileType
 		 this.keyModified("file_type") = 1
 	}

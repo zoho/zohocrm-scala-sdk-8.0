@@ -6,7 +6,7 @@ import scala.collection.mutable.HashMap
 class Abtesting extends Model	{
 	private var module:Option[Module] = None
 	private var name:Option[String] = None
-	private var id:Option[Long] = None
+	private var id:Option[String] = None
 	private var status:Option[String] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
@@ -28,11 +28,11 @@ class Abtesting extends Model	{
 		 this.keyModified("name") = 1
 	}
 
-	def getId() :Option[Long]	={
+	def getId() :Option[String]	={
 		return  this.id
 	}
 
-	def setId( id: Option[Long]) 	={
+	def setId( id: Option[String]) 	={
 		 this.id = id
 		 this.keyModified("id") = 1
 	}

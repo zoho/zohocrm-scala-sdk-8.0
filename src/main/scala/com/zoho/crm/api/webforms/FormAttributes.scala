@@ -8,7 +8,9 @@ class FormAttributes extends Model	{
 	private var width:Option[Int] = None
 	private var fontAttributes:Option[FontAttributes] = None
 	private var align:Option[String] = None
-	private var displayFormName:Option[String] = None
+	private var logo:Option[Logo] = None
+	private var background:Option[Background] = None
+	private var displayFormName:Option[Boolean] = None
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getColor() :Option[String]	={
@@ -47,11 +49,29 @@ class FormAttributes extends Model	{
 		 this.keyModified("align") = 1
 	}
 
-	def getDisplayFormName() :Option[String]	={
+	def getLogo() :Option[Logo]	={
+		return  this.logo
+	}
+
+	def setLogo( logo: Option[Logo]) 	={
+		 this.logo = logo
+		 this.keyModified("logo") = 1
+	}
+
+	def getBackground() :Option[Background]	={
+		return  this.background
+	}
+
+	def setBackground( background: Option[Background]) 	={
+		 this.background = background
+		 this.keyModified("background") = 1
+	}
+
+	def getDisplayFormName() :Option[Boolean]	={
 		return  this.displayFormName
 	}
 
-	def setDisplayFormName( displayFormName: Option[String]) 	={
+	def setDisplayFormName( displayFormName: Option[Boolean]) 	={
 		 this.displayFormName = displayFormName
 		 this.keyModified("display_form_name") = 1
 	}

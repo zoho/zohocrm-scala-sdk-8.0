@@ -2,8 +2,7 @@ package com.zoho.crm.api.util
 
 import java.io.InputStream
 import com.zoho.crm.api.Initializer
-import org.apache.http.HttpResponse
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase
+import org.apache.hc.core5.http.{ClassicHttpRequest, ClassicHttpResponse}
 import org.json.JSONObject
 
 import java.util
@@ -21,12 +20,12 @@ class Downloader(commonAPIHandler: CommonAPIHandler) extends Converter(commonAPI
    * @param requestObject  An Object containing the POJO class instance.
    * @param pack           A String containing the expected method return type.
    * @param instanceNumber An Integer containing the POJO class instance list number.
-   * @return A Object representing the API request body object.
+   * @return An Object representing the API request body object.
    * @throws Exception Exception
    */
   override def formRequest(requestObject: Any, pack: String, instanceNumber: Integer, memberDetails: JSONObject): Any = null
 
-  override def appendToRequest(requestBase: HttpEntityEnclosingRequestBase, requestObject: Any): Unit = {
+  override def appendToRequest(requestBase: ClassicHttpRequest, requestObject: Any): Unit = {
   }
 
   override def getWrappedResponse(response: Any, pack: String): Option[java.util.ArrayList[Any]] = {
@@ -55,7 +54,7 @@ class Downloader(commonAPIHandler: CommonAPIHandler) extends Converter(commonAPI
         val `type` = memberJsonDetails.get(Constants.TYPE).asInstanceOf[String]
         var instanceValue: Any = None
         if (`type`.equalsIgnoreCase(Constants.STREAM_WRAPPER_CLASS_PATH)) {
-          val contentDispositionHeader = response.asInstanceOf[HttpResponse].getFirstHeader(Constants.CONTENT_DISPOSITION)
+          val contentDispositionHeader: org.apache.hc.core5.http.Header = response.asInstanceOf[ClassicHttpResponse].getFirstHeader(Constants.CONTENT_DISPOSITION)
           var fileName = ""
           if (contentDispositionHeader != null) {
             val contentDisposition = contentDispositionHeader.getValue
@@ -63,12 +62,15 @@ class Downloader(commonAPIHandler: CommonAPIHandler) extends Converter(commonAPI
             if (fileName.contains("''")) fileName = fileName.split("''")(1)
             if (fileName.contains("\"")) fileName = fileName.replace("\"", "")
           }
-          val entity = response.asInstanceOf[HttpResponse].getEntity
+          val entity = response.asInstanceOf[ClassicHttpResponse].getEntity
           val constructor = Class.forName(`type`).getConstructor(classOf[Option[String]], classOf[Option[InputStream]])
+          if(entity == null) {
+            return entity
+          }
           val fileInstance = constructor.newInstance(Option(fileName), Option(entity.getContent))
           instanceValue = fileInstance
+          field.set(instance, Option(instanceValue))
         }
-        field.set(instance, Option(instanceValue))
       })
     }
     instance

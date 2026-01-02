@@ -1,9 +1,8 @@
 package com.zoho.crm.api.util
 
 import com.zoho.crm.api.Initializer
-import org.apache.http.HttpResponse
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase
-import org.apache.http.util.EntityUtils
+import org.apache.hc.core5.http.io.entity.EntityUtils
+import org.apache.hc.core5.http.{ClassicHttpRequest, ClassicHttpResponse}
 import org.json.JSONObject
 
 import java.lang.reflect.Modifier
@@ -18,16 +17,16 @@ class TextConverter(commonAPIHandler: CommonAPIHandler) extends Converter(common
   }
 
   @throws[Exception]
-  override def appendToRequest(requestBase: HttpEntityEnclosingRequestBase, requestObject: Any): Unit = {
+  override def appendToRequest(requestBase: ClassicHttpRequest, requestObject: Any): Unit = {
 
     // TODO Auto-generated method stub
   }
 
   @throws[Exception]
   override def getWrappedResponse(response: Any, pack: String): Option[java.util.ArrayList[Any]] = {
-    val responseEntity = response.asInstanceOf[HttpResponse].getEntity
+    val responseEntity = response.asInstanceOf[ClassicHttpResponse].getEntity
     if (responseEntity != null) {
-      var responseArray = new java.util.ArrayList[Any]()
+      val responseArray = new java.util.ArrayList[Any]()
       val responseObject = EntityUtils.toString(responseEntity)
       responseArray.add(getResponse(responseObject, pack))
       responseArray.add(responseObject)

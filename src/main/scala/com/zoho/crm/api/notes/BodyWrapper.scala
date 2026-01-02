@@ -6,6 +6,7 @@ import scala.collection.mutable.ArrayBuffer
 
 class BodyWrapper extends Model	{
 	private var data:ArrayBuffer[Note] = _
+	private var trigger:ArrayBuffer[String] = _
 	private var keyModified:HashMap[String, Int] = HashMap()
 
 	def getData() :ArrayBuffer[Note]	={
@@ -15,6 +16,15 @@ class BodyWrapper extends Model	{
 	def setData( data: ArrayBuffer[Note]) 	={
 		 this.data = data
 		 this.keyModified("data") = 1
+	}
+
+	def getTrigger() :ArrayBuffer[String]	={
+		return  this.trigger
+	}
+
+	def setTrigger( trigger: ArrayBuffer[String]) 	={
+		 this.trigger = trigger
+		 this.keyModified("trigger") = 1
 	}
 
 	def isKeyModified( key: String) :Any	={

@@ -90,6 +90,6 @@ class GetNotificationsParam		{
 
 
 class DeleteNotificationParam		{
-		final val channelIds:Param[Long] = new Param[Long]("channel_ids", "com.zoho.crm.api.Notifications.DeleteNotificationParam")
+		final val channelIds:Param[String] = new Param[String]("channel_ids", "com.zoho.crm.api.Notifications.DeleteNotificationParam")
 	}
 }

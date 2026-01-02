@@ -1,17 +1,15 @@
 package com.zoho.crm.api.util
 
-import java.io.File
-import java.io.FileInputStream
-import java.io.InputStream
-
 import com.zoho.crm.api.exception.SDKException
+
+import java.io.{File, FileInputStream, InputStream}
 
 /**
  * This class handles the file stream and name.
  */
 
 class StreamWrapper(var name: Option[String] = None, var stream: Option[InputStream] = None) {
-  def this(filePath: String) {
+  def this(filePath: String) = {
     this()
 
     try {
